@@ -36,8 +36,9 @@ namespace BorelliMosconiFunzioni
             public string[] TondeChiuse;
             public int[,] InizioFineTonde;
             public string[] TondeAperteChiuse;
+            public double[,] coordinata;
         }
-        double[,] coordinata = new double[2, 10000000];
+        SuddivisioneFunzione FUNZIONE;
 
         public Form1()
         {
@@ -59,18 +60,18 @@ namespace BorelliMosconiFunzioni
                 pv.Model = new PlotModel { Title = "CIAO" };
                 for (int i = 0; i < contatore; i++)
                 {
-                    fs.Points.Add(new DataPoint(coordinata[0, i], coordinata[1, i]));
+                    fs.Points.Add(new DataPoint(FUNZIONE.coordinata[0, i], FUNZIONE.coordinata[1, i]));
                 }
 
                 pv.Model.Series.Add(fs);
+
+                pv.Model.Series.Add(new FunctionSeries(Math.Sin, -200, 200, 0.1, "Sin(x)"));
             }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            SuddivisioneFunzione FUNZIONE;
             int indice = 1;
-
             FUNZIONE.SingoliPezziFunzione = new string[100];
             FUNZIONE.PezziFunzione = new int[100];
             FUNZIONE.esponenti = new int[100];
@@ -81,6 +82,7 @@ namespace BorelliMosconiFunzioni
             FUNZIONE.TondeChiuse = new string[100];
             FUNZIONE.InizioFineTonde = new int[2, 100];
             FUNZIONE.TondeAperteChiuse = new string[100];
+            FUNZIONE.coordinata = new double[2, 100000];
 
             for (int i = 0; i < FUNZIONE.coefficenti.Length; i++)//pongo tutti i possibili coefficenti pari a 1, quindi come inesistenti
             {
@@ -103,14 +105,13 @@ namespace BorelliMosconiFunzioni
                 FUNZIONE.SingoliPezziFunzioneBackup[i] = FUNZIONE.SingoliPezziFunzione[i];
             }
 
-            IndividuazioneCoordinate(FUNZIONE, indice, coordinata, ref contatore);
+            IndividuazioneCoordinate(FUNZIONE, indice, ref contatore);
             controllo = 1;
-
             Form1_Load(sender, e);
 
         }
 
-
+        //parte funzioni nostre
         public static void IndividuazioneOperatori(SuddivisioneFunzione Funzione, ref int Indice)//trovo la posizione degli operatori
         {
             Funzione.PezziFunzione[0] = 0; //assegno al primo pezzo del vettore la posizione 0
@@ -193,7 +194,7 @@ namespace BorelliMosconiFunzioni
             }
         }
 
-        public static void IndividuazioneCoordinate(SuddivisioneFunzione Funzione, int Indice, double[,] MatriceCoordinate, ref int contatore)//trovo i coefficenti e gli esponenti
+        public static void IndividuazioneCoordinate(SuddivisioneFunzione Funzione, int Indice, ref int contatore)//trovo i coefficenti e gli esponenti
         {
             double x = -250;
             double y;
@@ -206,7 +207,7 @@ namespace BorelliMosconiFunzioni
                 {
                     Funzione.SingoliPezziFunzione[i] = Funzione.SingoliPezziFunzioneBackup[i]; //ripristina i valori originali
                 }
-                MatriceCoordinate[0, contatore] = x;
+                Funzione.coordinata[0, contatore] = x;
 
                 for (int i = 0; i < Indice; i++)
                 {
@@ -253,7 +254,7 @@ namespace BorelliMosconiFunzioni
                 }
                 //Console.WriteLine("SOMMA:" + SommaBackup);
                 y = Risoluzione(SommaBackup);
-                MatriceCoordinate[1, contatore] = y;
+                Funzione.coordinata[1, contatore] = y;
 
                 contatore++;
                 //MessageBox.Show(Convert.ToString(contatore));
@@ -312,6 +313,11 @@ namespace BorelliMosconiFunzioni
                     Funzione.TondeAperteChiuse[indiceImportante] += parentesi;
                 }
             }
+        }
+
+        private void plotView2_Click(object sender, EventArgs e)
+        {
+
         }
 
         public static string Parentesi(SuddivisioneFunzione Funzione)
