@@ -23,7 +23,7 @@ namespace BorelliMosconiFunzioni
 
     public partial class Form1 : Form
     {
-        int controllo = 0;
+        int controllo = 0, contatore = 0;
         public struct SuddivisioneFunzione
         {
             public string funzione;
@@ -46,7 +46,6 @@ namespace BorelliMosconiFunzioni
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            MessageBox.Show("HELO");
             if (controllo == 1)
             {
                 PlotView pv = new PlotView();
@@ -58,7 +57,7 @@ namespace BorelliMosconiFunzioni
 
 
                 pv.Model = new PlotModel { Title = "CIAO" };
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < contatore; i++)
                 {
                     fs.Points.Add(new DataPoint(coordinata[0, i], coordinata[1, i]));
                 }
@@ -104,7 +103,7 @@ namespace BorelliMosconiFunzioni
                 FUNZIONE.SingoliPezziFunzioneBackup[i] = FUNZIONE.SingoliPezziFunzione[i];
             }
 
-            IndividuazioneCoordinate(FUNZIONE, indice, coordinata);
+            IndividuazioneCoordinate(FUNZIONE, indice, coordinata, ref contatore);
             controllo = 1;
 
             Form1_Load(sender, e);
@@ -194,11 +193,11 @@ namespace BorelliMosconiFunzioni
             }
         }
 
-        public static void IndividuazioneCoordinate(SuddivisioneFunzione Funzione, int Indice, double[,] MatriceCoordinate)//trovo i coefficenti e gli esponenti
+        public static void IndividuazioneCoordinate(SuddivisioneFunzione Funzione, int Indice, double[,] MatriceCoordinate, ref int contatore)//trovo i coefficenti e gli esponenti
         {
             double x = -250;
             double y;
-            int contatore = 0;
+            contatore = 0;
             string SommaBackup = "";
             while (contatore < 1000)//troviamo le coordinate di alcuni punti appartenenti alla funzione
             {
