@@ -108,7 +108,7 @@ namespace BorelliMosconiFunzioni
             controllo = 1;
 
             Form1_Load(sender, e);
-            
+
         }
 
 
