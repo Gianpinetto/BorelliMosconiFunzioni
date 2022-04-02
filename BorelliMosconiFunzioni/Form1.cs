@@ -37,7 +37,7 @@ namespace BorelliMosconiFunzioni
             public int[,] InizioFineTonde;
             public string[] TondeAperteChiuse;
         }
-        double[,] coordinata = new double[2, 1000];
+        double[,] coordinata = new double[2, 10000000];
 
         public Form1()
         {
@@ -58,7 +58,7 @@ namespace BorelliMosconiFunzioni
 
 
                 pv.Model = new PlotModel { Title = "CIAO" };
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < 10000; i++)
                 {
                     fs.Points.Add(new DataPoint(coordinata[0, i], coordinata[1, i]));
                 }
@@ -196,11 +196,11 @@ namespace BorelliMosconiFunzioni
 
         public static void IndividuazioneCoordinate(SuddivisioneFunzione Funzione, int Indice, double[,] MatriceCoordinate)//trovo i coefficenti e gli esponenti
         {
-            double x = 0;
+            double x = -250;
             double y;
             int contatore = 0;
             string SommaBackup = "";
-            while (contatore < 100)//troviamo le coordinate di alcuni punti appartenenti alla funzione
+            while (contatore < 1000)//troviamo le coordinate di alcuni punti appartenenti alla funzione
             {
                 SommaBackup = "";
                 for (int i = 0; i < 100; i++) //quando lo rifai con la x diversa te la ripristina
@@ -252,12 +252,13 @@ namespace BorelliMosconiFunzioni
                 {
                     SommaBackup += Funzione.funzione.Substring(Funzione.PezziFunzione[i], 1) + Funzione.TondeAperte[i] + Funzione.SingoliPezziFunzione[i] + Funzione.TondeChiuse[i] + Funzione.TondeAperteChiuse[i];
                 }
-                Console.WriteLine("SOMMA:" + SommaBackup);
+                //Console.WriteLine("SOMMA:" + SommaBackup);
                 y = Risoluzione(SommaBackup);
                 MatriceCoordinate[1, contatore] = y;
 
                 contatore++;
-                x += 0.25;
+                //MessageBox.Show(Convert.ToString(contatore));
+                x += 0.5;
             }
         }
 
