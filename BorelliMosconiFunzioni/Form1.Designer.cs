@@ -86,16 +86,6 @@ namespace BorelliMosconiFunzioni
             this.textBox2.Size = new System.Drawing.Size(161, 20);
             this.textBox2.TabIndex = 5;
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(1118, 6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(21, 26);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "↓";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
