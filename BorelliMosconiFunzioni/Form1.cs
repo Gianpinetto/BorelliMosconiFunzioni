@@ -50,7 +50,7 @@ namespace BorelliMosconiFunzioni
             if (controllo == 1)
             {
                 PlotView pv = new PlotView();
-                FunctionSeries fs = new FunctionSeries();
+                FunctionSeries fs= new FunctionSeries();
 
                 pv.Location = new Point(0, 0);
                 pv.Size = new Size(750, 500);
@@ -65,7 +65,8 @@ namespace BorelliMosconiFunzioni
 
                 pv.Model.Series.Add(fs);
 
-                pv.Model.Series.Add(new FunctionSeries(Math.Sin, -200, 200, 0.1, "Sin(x)"));
+
+                //pv.Model.Series.Add(new FunctionSeries(Math.Sin, -200, 200, 0.1, "Sin(x)"));
             }
         }
 
@@ -82,7 +83,7 @@ namespace BorelliMosconiFunzioni
             FUNZIONE.TondeChiuse = new string[100];
             FUNZIONE.InizioFineTonde = new int[2, 100];
             FUNZIONE.TondeAperteChiuse = new string[100];
-            FUNZIONE.coordinata = new double[2, 100000];
+            FUNZIONE.coordinata = new double[2, 10000];
 
             for (int i = 0; i < FUNZIONE.coefficenti.Length; i++)//pongo tutti i possibili coefficenti pari a 1, quindi come inesistenti
             {
@@ -92,12 +93,10 @@ namespace BorelliMosconiFunzioni
 
             FUNZIONE.funzione = " "; //aggiungo lo spazio all'inizio
             FUNZIONE.funzione += textBox2.Text; //prendo in input
+            FUNZIONE.funzione = DenominatoreParentesi(FUNZIONE); //aggiungo le parentesi al denominatore nel caso in cu non ci siano
             FUNZIONE.funzione = Parentesi(FUNZIONE); //aggiungo il +0 alla fine di qualsiasi tonda
-
             IndividuazioneOperatori(FUNZIONE, ref indice);
-
             SuddivisioneSottostringhe(FUNZIONE, indice);
-
             IndividuazioneCoefficentiEsponenti(FUNZIONE, indice);
 
             for (int i = 0; i < 100; i++)
@@ -315,20 +314,66 @@ namespace BorelliMosconiFunzioni
             }
         }
 
-        private void plotView2_Click(object sender, EventArgs e)
+        int qta = 1;
+        private void button2_Click(object sender, EventArgs e)
         {
+            /*if (qta < 5)
+            {
+                TextBox textBox = new TextBox();
+                this.Controls.Add(textBox);
 
+                textBox.Top = qta * 40;
+                textBox.Left = 951;
+                qta++;
+                //textBox.ForeColor = Color.Yellow;
+            }
+            else
+                MessageBox.Show("HAI RAGGIUNTO IL NUMERO MASSIMO DI FUNZIONI CONTEMPORANEAMENTE");*/
+            
         }
 
         public static string Parentesi(SuddivisioneFunzione Funzione)
         {
             string RisFin = Funzione.funzione;
-            Console.WriteLine("VECCHIA POSIZIONE:" + Funzione.funzione.Length);
             for (int i = 0; i < Funzione.funzione.Length; i++)
             {
                 if (Funzione.funzione.Substring(i, 1) == ")")
                 {
                     RisFin = Funzione.funzione.Insert(i, "+0");
+                    i += 2;
+                    Funzione.funzione = RisFin;
+                }
+            }
+            return RisFin;
+        }
+
+        public static string DenominatoreParentesi(SuddivisioneFunzione Funzione) //aggiungiamo un +0 prima della chiusera di ogni parentesi
+        {
+            string RisFin = Funzione.funzione;
+            for (int i = 0; i < Funzione.funzione.Length - 1; i++)
+            {
+                if (Funzione.funzione.Substring(i, 1) == "/" && Funzione.funzione.Substring(i + 1, 1) != "(") //se c'è denominatore e poi non c'è una tonda
+                {
+                    RisFin = Funzione.funzione.Insert(i + 1, "(");
+                    int k = 0;
+                    for (k = i + 1; k < Funzione.funzione.Length - 1; k++)
+                    {
+                        Funzione.funzione = RisFin;
+                        RisFin = Funzione.funzione;
+                        if (Funzione.funzione.Substring(k, 1) == "/" || Funzione.funzione.Substring(k, 1) == "+" ||
+                            Funzione.funzione.Substring(k, 1) == "-" || Funzione.funzione.Substring(k, 1) == "*")
+                        {
+                            Console.WriteLine($"K:{k} FUNZIONE:{Funzione.funzione}, VALORE:{Funzione.funzione.Substring(k, 1)}");
+                            RisFin = Funzione.funzione.Insert(k, ")");
+                            k = Funzione.funzione.Length + 1; //esc subito dalla funzione
+                        }
+                    }
+                    if (k != Funzione.funzione.Length + 2) //se non mi ha trovato operatori
+                    {
+                        Funzione.funzione = RisFin;
+                        RisFin = Funzione.funzione;
+                        RisFin = Funzione.funzione.Insert(Funzione.funzione.Length, ")");
+                    }
                     i += 2;
                     Funzione.funzione = RisFin;
                 }
