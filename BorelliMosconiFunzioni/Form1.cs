@@ -143,7 +143,7 @@ namespace BorelliMosconiFunzioni
                 if (funzione.Substring(i, 1).ToUpper() == "X")
                 {
                     funzione = funzione.Remove(i, 1); //tolgo la x
-                    funzione = funzione.Insert(i, $"*{xStringa}"); //rimpiazzo con "*"+ il numero al momento
+                    funzione = funzione.Insert(i, $"*({xStringa})"); //rimpiazzo con "*"+ il numero al momento
                 }
             }
 
