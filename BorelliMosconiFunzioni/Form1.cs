@@ -15,8 +15,6 @@ using OxyPlot;
 using OxyPlot.WindowsForms;
 using OxyPlot.Series;
 using OxyPlot.Axes;
-using OxyPlot.Utilities;
-using OxyPlot.Legends;
 
 namespace BorelliMosconiFunzioni
 {
@@ -26,6 +24,11 @@ namespace BorelliMosconiFunzioni
     {
         int controllo = 0;
         double[,] coordinate = new double[2, 1000];
+        bool[] condizioni = new bool[100];
+
+        PlotView pv = new PlotView();
+        FunctionSeries fs = new FunctionSeries();
+
         public Form1()
         {
             InitializeComponent();
@@ -35,8 +38,10 @@ namespace BorelliMosconiFunzioni
         {
             if (controllo == 1)
             {
-                PlotView pv = new PlotView();
-                FunctionSeries fs= new FunctionSeries();
+
+                /*var model = new PlotModel("Two LineSeries") { LegendSymbolLength = 24 };
+                model.Axes.Add(new LinearAxis(AxisPosition.Left, -1, 71, "Y-Axis"));
+                model.Axes.Add(new LinearAxis(AxisPosition.Bottom, -1, 61, "X-Axis"));*/
 
                 pv.Location = new Point(0, 0);
                 pv.Size = new Size(750, 500);
@@ -44,13 +49,16 @@ namespace BorelliMosconiFunzioni
 
 
                 pv.Model = new PlotModel { Title = "CIAO" };
-                for (int i = 0; i < 100; i++)
+                for (int i = 1; i < 100; i++)
                 {
-                    fs.Points.Add(new DataPoint(coordinate[0, i], coordinate[1, i]));
+                    if (condizioni[i]==false)
+                        fs.Points.Add(new DataPoint(coordinate[0, i], coordinate[1, i]));
+                    else
+                        fs.Points.Add(DataPoint.Undefined);                    
                 }
-
+                
+                //pv.Axes.Add
                 pv.Model.Series.Add(fs);
-
 
                 //pv.Model.Series.Add(new FunctionSeries(Math.Sin, -200, 200, 0.1, "Sin(x)"));
             }
@@ -63,7 +71,6 @@ namespace BorelliMosconiFunzioni
             double x = -50;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             string backup = funzione;
-            bool[] condizioni = new bool[100];
 
             while (contatore < 100)
             {
@@ -158,6 +165,12 @@ namespace BorelliMosconiFunzioni
                 coordinata[1, contatore] = y;
             }
             contatore++;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            pv.Model.Series.Clear();
+            pv.Refresh();
         }
     }
 }
