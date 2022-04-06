@@ -34,7 +34,6 @@ namespace BorelliMosconiFunzioni
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -70,17 +69,11 @@ namespace BorelliMosconiFunzioni
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(951, 10);
+            this.textBox2.Location = new System.Drawing.Point(978, 6);
+            this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(161, 20);
+            this.textBox2.Size = new System.Drawing.Size(161, 26);
             this.textBox2.TabIndex = 5;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(0, 0);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 14;
             // 
             // checkBox1
             // 
@@ -150,7 +143,7 @@ namespace BorelliMosconiFunzioni
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(960, 147);
+            this.button3.Location = new System.Drawing.Point(907, 356);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(85, 42);
             this.button3.TabIndex = 15;
@@ -171,7 +164,6 @@ namespace BorelliMosconiFunzioni
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
@@ -180,7 +172,7 @@ namespace BorelliMosconiFunzioni
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "GRAPH V-0.1.1";
+            this.Text = "GRAPH V-0.1.3";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -192,9 +184,7 @@ namespace BorelliMosconiFunzioni
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private OxyPlot.WindowsForms.PlotView plotView1;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;

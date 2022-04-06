@@ -24,10 +24,16 @@ namespace BorelliMosconiFunzioni
     {
         int controllo = 0;
         double[,] coordinate = new double[2, 1000];
-        bool[] condizioni = new bool[100];
+        bool[] condizioni = new bool[1000];
 
         PlotView pv = new PlotView();
         FunctionSeries fs = new FunctionSeries();
+        FunctionSeries fx1 = new FunctionSeries();
+        FunctionSeries fx2 = new FunctionSeries();
+        FunctionSeries fx3 = new FunctionSeries();
+        FunctionSeries absf1 = new FunctionSeries();
+        FunctionSeries absf2 = new FunctionSeries();
+        FunctionSeries absf3 = new FunctionSeries();
 
         public Form1()
         {
@@ -56,11 +62,9 @@ namespace BorelliMosconiFunzioni
                     else
                         fs.Points.Add(DataPoint.Undefined);                    
                 }
-                
-                //pv.Axes.Add
+
                 pv.Model.Series.Add(fs);
 
-                //pv.Model.Series.Add(new FunctionSeries(Math.Sin, -200, 200, 0.1, "Sin(x)"));
             }
         }
 
@@ -83,7 +87,6 @@ namespace BorelliMosconiFunzioni
                 {
                     condizioni[contatore] = true;
                 }
-                //Console.WriteLine($"CONTATORE: {contatore} X:{x - 1} CONDIZIONE: {condizioni[contatore]} ");
                 contatore++;
             }
 
