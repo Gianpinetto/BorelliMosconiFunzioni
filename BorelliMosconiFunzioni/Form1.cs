@@ -23,10 +23,14 @@ namespace BorelliMosconiFunzioni
     public partial class Form1 : Form
     {
         int controllo = 0;
-        double[,] coordinate = new double[2, 1000];
-        bool[] condizioni = new bool[1000];
+        int range = 10000;
+        double[,] coordinate = new double[2, 100000];
+        bool[] condizioni = new bool[100000];
 
         PlotView pv = new PlotView();
+
+        PlotModel model = new PlotModel();
+        
         FunctionSeries fs = new FunctionSeries();
         FunctionSeries fx1 = new FunctionSeries();
         FunctionSeries fx2 = new FunctionSeries();
@@ -42,12 +46,19 @@ namespace BorelliMosconiFunzioni
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            
+
             if (controllo == 1)
             {
 
-                /*var model = new PlotModel("Two LineSeries") { LegendSymbolLength = 24 };
-                model.Axes.Add(new LinearAxis(AxisPosition.Left, -1, 71, "Y-Axis"));
-                model.Axes.Add(new LinearAxis(AxisPosition.Bottom, -1, 61, "X-Axis"));*/
+                var yAxis = new OxyPlot.Axes.LinearAxis();
+                var xAxis = new OxyPlot.Axes.LinearAxis();
+                xAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
+
+                yAxis.Position = OxyPlot.Axes.AxisPosition.Left; //mio
+
+                pv.Model = model; //pv è il vostro oggetto esistente, assegniamo il model cui sopra
 
                 pv.Location = new Point(0, 0);
                 pv.Size = new Size(750, 500);
@@ -55,7 +66,12 @@ namespace BorelliMosconiFunzioni
 
 
                 pv.Model = new PlotModel { Title = "CIAO" };
-                for (int i = 1; i < 100; i++)
+
+                pv.Model.Axes.Add(xAxis);//mio
+
+
+                pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
+                for (int i = 1; i < range; i++)
                 {
                     if (condizioni[i]==false)
                         fs.Points.Add(new DataPoint(coordinate[0, i], coordinate[1, i]));
@@ -65,6 +81,13 @@ namespace BorelliMosconiFunzioni
 
                 pv.Model.Series.Add(fs);
 
+                pv.Model.Axes[1].AbsoluteMinimum = -100000;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
+                pv.Model.Axes[1].AbsoluteMaximum = 100000; // e massimo
+
+
+                pv.Model.Axes[0].AbsoluteMinimum =-range/2;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
+                pv.Model.Axes[0].AbsoluteMaximum = range; // e massimo
+
             }
         }
 
@@ -72,11 +95,11 @@ namespace BorelliMosconiFunzioni
         {
             string funzione = textBox2.Text;
             int contatore = 0;
-            double x = -50;
+            double x = -range/2;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             string backup = funzione;
 
-            while (contatore < 100)
+            while (contatore < range)
             {
                 funzione = backup;
                 try
@@ -90,9 +113,9 @@ namespace BorelliMosconiFunzioni
                 contatore++;
             }
 
-            x = -50;
+            x = -range/2;
             contatore = 0;
-            while (contatore < 100)
+            while (contatore < range)
             {
                 funzione = backup;
                 if (condizioni[contatore] != true)
@@ -172,6 +195,11 @@ namespace BorelliMosconiFunzioni
 
         private void button3_Click(object sender, EventArgs e)
         {
+            pv.Refresh();
+            double m = pv.Model.Axes[1].Minimum; //così li leggo
+            MessageBox.Show(m.ToString());
+            m = pv.Model.Axes[1].Maximum;
+            MessageBox.Show(m.ToString());
             pv.Model.Series.Clear();
             pv.Refresh();
         }
