@@ -24,8 +24,8 @@ namespace BorelliMosconiFunzioni
     {
         int controllo = 0;
         int range = 10000;
-        double[,] coordinate = new double[2, 100000];
-        bool[] condizioni = new bool[100000];
+        double[,] coordinate = new double[2, 10000];
+        bool[] condizioni = new bool[10000];
 
         PlotView pv = new PlotView();
 
@@ -81,6 +81,15 @@ namespace BorelliMosconiFunzioni
 
                 pv.Model.Series.Add(fs);
 
+                pv.Model.Axes[1].Minimum = -50;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
+                pv.Model.Axes[1].Maximum = 50; // e massimo
+
+
+                pv.Model.Axes[0].Minimum = -50;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
+                pv.Model.Axes[0].Maximum = 50; // e massimo
+
+
+
                 pv.Model.Axes[1].AbsoluteMinimum = -100000;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
                 pv.Model.Axes[1].AbsoluteMaximum = 100000; // e massimo
 
@@ -95,7 +104,7 @@ namespace BorelliMosconiFunzioni
         {
             string funzione = textBox2.Text;
             int contatore = 0;
-            double x = -range/2;
+            double x = -250;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             string backup = funzione;
 
@@ -113,7 +122,7 @@ namespace BorelliMosconiFunzioni
                 contatore++;
             }
 
-            x = -range/2;
+            x = -250;
             contatore = 0;
             while (contatore < range)
             {
@@ -123,7 +132,7 @@ namespace BorelliMosconiFunzioni
                     Risoluzione(funzione, coordinate, contatore, ref x, 0);
                 }
                 else
-                    x += 1;
+                    x += 0.25;
                 contatore++;
             }
             controllo = 1;
@@ -181,7 +190,7 @@ namespace BorelliMosconiFunzioni
             }
 
             Expression expr = new Expression(funzione);
-            x += 1;
+            x += 0.25;
             var value = expr.Eval(); //calcolo il valore della nuova espressione
             y = Convert.ToDouble(value); //converto in double
 
@@ -195,11 +204,6 @@ namespace BorelliMosconiFunzioni
 
         private void button3_Click(object sender, EventArgs e)
         {
-            pv.Refresh();
-            double m = pv.Model.Axes[1].Minimum; //così li leggo
-            MessageBox.Show(m.ToString());
-            m = pv.Model.Axes[1].Maximum;
-            MessageBox.Show(m.ToString());
             pv.Model.Series.Clear();
             pv.Refresh();
         }
