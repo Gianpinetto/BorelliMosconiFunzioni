@@ -125,10 +125,20 @@ namespace BorelliMosconiFunzioni
                 {
                     condizioni[contatore] = true;
                 }
+
+                funzione = backup;
+                x += aumentoX;
+                if (condizioni[contatore] != true)
+                {
+                    //MessageBox.Show("FROCIO");
+                    Risoluzione(funzione, coordinate, contatore, ref x, 0, ref ymin, ref ymax);
+                }
+
+
                 contatore++;
             }
 
-            ymin = 0;
+            /*ymin = 0;
             ymax = 0;
 
             x = -250;
@@ -144,7 +154,7 @@ namespace BorelliMosconiFunzioni
                     x += aumentoX;
                 contatore++;
             }
-            controllo = 1;
+            controllo = 1;*/
             Form1_Load(sender, e);
 
         }
