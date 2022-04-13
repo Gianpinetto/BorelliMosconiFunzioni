@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Threading;
+
 using System.Text.RegularExpressions; //serve per rimuovere pezzi di stringa
 using org.matheval;
 
@@ -19,11 +21,17 @@ using OxyPlot.Axes;
 namespace BorelliMosconiFunzioni
 {
 
+//   System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+//customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+//System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 
     public partial class Form1 : Form
     {
+
         int controllo = 0;
         int range = 10000;
+        double aumentoX = 0.025;
         double[,] coordinate = new double[2, 10000];
         bool[] condizioni = new bool[10000];
 
@@ -46,8 +54,11 @@ namespace BorelliMosconiFunzioni
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
 
-            
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+
 
             if (controllo == 1)
             {
@@ -104,7 +115,7 @@ namespace BorelliMosconiFunzioni
         {
             string funzione = textBox2.Text;
             int contatore = 0;
-            double x = -250;
+            double x = -25;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             string backup = funzione;
 
@@ -122,7 +133,7 @@ namespace BorelliMosconiFunzioni
                 contatore++;
             }
 
-            x = -250;
+            x = -25;
             contatore = 0;
             while (contatore < range)
             {
@@ -132,7 +143,7 @@ namespace BorelliMosconiFunzioni
                     Risoluzione(funzione, coordinate, contatore, ref x, 0);
                 }
                 else
-                    x += 0.25;
+                    x += aumentoX;
                 contatore++;
             }
             controllo = 1;
@@ -175,6 +186,7 @@ namespace BorelliMosconiFunzioni
         }
         public static void Risoluzione(string funzione, double[,] coordinata, int contatore, ref double x, int condizione)
         {
+            double aumentoX = 0.025;
             double y = 0;
             string xStringa = "";
             xStringa = Convert.ToString(x);
@@ -190,13 +202,13 @@ namespace BorelliMosconiFunzioni
             }
 
             Expression expr = new Expression(funzione);
-            x += 0.25;
+            x += aumentoX;
             var value = expr.Eval(); //calcolo il valore della nuova espressione
             y = Convert.ToDouble(value); //converto in double
 
             if (condizione != 1) //se non è la volta in cui entro nel ciclo solo per controllare le condizioni
             {
-                coordinata[0, contatore] = x - 1;
+                coordinata[0, contatore] = x - aumentoX;
                 coordinata[1, contatore] = y;
             }
             contatore++;
