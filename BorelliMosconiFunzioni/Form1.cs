@@ -62,8 +62,8 @@ namespace BorelliMosconiFunzioni
 
             if (controllo == 1)
             {
-                MessageBox.Show($"MINIMO: {Convert.ToString(ymin)}");
-                MessageBox.Show($"MAXIMO 1-2 GIORNI: {Convert.ToString(ymax)}");
+                //MessageBox.Show($"MINIMO: {Convert.ToString(ymin)}");
+                //MessageBox.Show($"MAXIMO 1-2 GIORNI: {Convert.ToString(ymax)}");
                 var yAxis = new OxyPlot.Axes.LinearAxis();
                 var xAxis = new OxyPlot.Axes.LinearAxis();
                 xAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
@@ -85,7 +85,7 @@ namespace BorelliMosconiFunzioni
                 pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
                 for (int i = 1; i < range; i++)
                 {
-                    if (condizioni[i]==false)
+                    if (condizioni[i]==false) //se non è òa condizione di esistenza interrompo linea
                         fs.Points.Add(new DataPoint(coordinate[0, i], coordinate[1, i]));
                     else
                         fs.Points.Add(DataPoint.Undefined);                    
@@ -110,7 +110,8 @@ namespace BorelliMosconiFunzioni
         {
             string funzione = textBox2.Text;
             int contatore = 0;
-            double x = -250;
+            double x = -(range/2)*aumentoX;
+            double xCiao = x;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             string backup = funzione;
 
@@ -119,44 +120,23 @@ namespace BorelliMosconiFunzioni
                 funzione = backup;
                 try
                 {
-                    Risoluzione(funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax);
+                    Risoluzione(funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX);
                 }
                 catch
                 {
                     condizioni[contatore] = true;
                 }
 
-                funzione = backup;
-                x += aumentoX;
-                if (condizioni[contatore] != true)
-                {
-                    //MessageBox.Show("FROCIO");
-                    Risoluzione(funzione, coordinate, contatore, ref x, 0, ref ymin, ref ymax);
-                }
-
-
-                contatore++;
-            }
-
-            /*ymin = 0;
-            ymax = 0;
-
-            x = -250;
-            contatore = 0;
-            while (contatore < range)
-            {
+                xCiao =x- aumentoX;
                 funzione = backup;
                 if (condizioni[contatore] != true)
                 {
-                    Risoluzione(funzione, coordinate, contatore, ref x, 0, ref ymin, ref ymax);
+                    Risoluzione(funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX);
+                    controllo = 1;
                 }
-                else
-                    x += aumentoX;
                 contatore++;
             }
-            controllo = 1;*/
             Form1_Load(sender, e);
-
         }
 
         //parte funzioni nostre
@@ -192,9 +172,8 @@ namespace BorelliMosconiFunzioni
             }
             return RisFin;
         }
-        public static void Risoluzione(string funzione, double[,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax)
+        public static void Risoluzione(string funzione, double[,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX)
         {
-            double aumentoX = 0.25;
             double y = 0;
             string xStringa = "";
             xStringa = Convert.ToString(x);
