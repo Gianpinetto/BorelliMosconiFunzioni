@@ -31,7 +31,7 @@ namespace BorelliMosconiFunzioni
 
         int controllo = 0;
         int range = 10000;
-        double aumentoX = 0.025;
+        double aumentoX = 0.25, ymin = 0, ymax = 0;
         double[,] coordinate = new double[2, 10000];
         bool[] condizioni = new bool[10000];
 
@@ -62,7 +62,8 @@ namespace BorelliMosconiFunzioni
 
             if (controllo == 1)
             {
-
+                MessageBox.Show($"MINIMO: {Convert.ToString(ymin)}");
+                MessageBox.Show($"MAXIMO 1-2 GIORNI: {Convert.ToString(ymax)}");
                 var yAxis = new OxyPlot.Axes.LinearAxis();
                 var xAxis = new OxyPlot.Axes.LinearAxis();
                 xAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
@@ -92,21 +93,15 @@ namespace BorelliMosconiFunzioni
 
                 pv.Model.Series.Add(fs);
 
-                pv.Model.Axes[1].Minimum = -50;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
-                pv.Model.Axes[1].Maximum = 50; // e massimo
+                pv.Model.Axes[1].Minimum = -10;  //[1]=X  [0] = Y
+                pv.Model.Axes[1].Maximum = 10; 
+                pv.Model.Axes[0].Minimum = -10; 
+                pv.Model.Axes[0].Maximum = 10;
 
-
-                pv.Model.Axes[0].Minimum = -50;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
-                pv.Model.Axes[0].Maximum = 50; // e massimo
-
-
-
-                pv.Model.Axes[1].AbsoluteMinimum = -100000;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
-                pv.Model.Axes[1].AbsoluteMaximum = 100000; // e massimo
-
-
-                pv.Model.Axes[0].AbsoluteMinimum =-range/2;  //così setto il valore minimo, nota [1] indica l'asse x perchè sopra è stato inserito per secondo, [0] sarà l'asse y
-                pv.Model.Axes[0].AbsoluteMaximum = range; // e massimo
+                pv.Model.Axes[0].AbsoluteMinimum = coordinate[0, 0];
+                pv.Model.Axes[0].AbsoluteMaximum = coordinate[0, 9999];
+                pv.Model.Axes[1].AbsoluteMinimum = ymin;
+                pv.Model.Axes[1].AbsoluteMaximum = ymax;
 
             }
         }
@@ -115,7 +110,7 @@ namespace BorelliMosconiFunzioni
         {
             string funzione = textBox2.Text;
             int contatore = 0;
-            double x = -25;
+            double x = -250;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             string backup = funzione;
 
@@ -124,7 +119,7 @@ namespace BorelliMosconiFunzioni
                 funzione = backup;
                 try
                 {
-                    Risoluzione(funzione, coordinate, contatore, ref x, 1);
+                    Risoluzione(funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax);
                 }
                 catch
                 {
@@ -133,14 +128,17 @@ namespace BorelliMosconiFunzioni
                 contatore++;
             }
 
-            x = -25;
+            ymin = 0;
+            ymax = 0;
+
+            x = -250;
             contatore = 0;
             while (contatore < range)
             {
                 funzione = backup;
                 if (condizioni[contatore] != true)
                 {
-                    Risoluzione(funzione, coordinate, contatore, ref x, 0);
+                    Risoluzione(funzione, coordinate, contatore, ref x, 0, ref ymin, ref ymax);
                 }
                 else
                     x += aumentoX;
@@ -184,9 +182,9 @@ namespace BorelliMosconiFunzioni
             }
             return RisFin;
         }
-        public static void Risoluzione(string funzione, double[,] coordinata, int contatore, ref double x, int condizione)
+        public static void Risoluzione(string funzione, double[,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax)
         {
-            double aumentoX = 0.025;
+            double aumentoX = 0.25;
             double y = 0;
             string xStringa = "";
             xStringa = Convert.ToString(x);
@@ -206,6 +204,11 @@ namespace BorelliMosconiFunzioni
             var value = expr.Eval(); //calcolo il valore della nuova espressione
             y = Convert.ToDouble(value); //converto in double
 
+            if (y < ymin)
+                ymin = y;
+            if (y > ymax)
+                ymax = y;
+
             if (condizione != 1) //se non è la volta in cui entro nel ciclo solo per controllare le condizioni
             {
                 coordinata[0, contatore] = x - aumentoX;
@@ -218,6 +221,11 @@ namespace BorelliMosconiFunzioni
         {
             pv.Model.Series.Clear();
             pv.Refresh();
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
