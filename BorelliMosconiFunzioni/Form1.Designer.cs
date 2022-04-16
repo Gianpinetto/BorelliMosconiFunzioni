@@ -74,7 +74,6 @@ namespace BorelliMosconiFunzioni
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(161, 26);
             this.textBox2.TabIndex = 5;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // checkBox1
             // 
@@ -86,6 +85,7 @@ namespace BorelliMosconiFunzioni
             this.checkBox1.TabIndex = 8;
             this.checkBox1.Text = "f(-x) [SIMM. y]";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // checkBox2
             // 
@@ -173,7 +173,7 @@ namespace BorelliMosconiFunzioni
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "GRAPH V-0.2.0";
+            this.Text = "GRAPH V-0.2.1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

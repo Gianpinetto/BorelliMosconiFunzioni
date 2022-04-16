@@ -32,14 +32,14 @@ namespace BorelliMosconiFunzioni
         int controllo = 0;
         int range = 10000;
         double aumentoX = 0.25, ymin = 0, ymax = 0;
-        double[,] coordinate = new double[2, 10000];
-        bool[] condizioni = new bool[10000];
+        double[,,] coordinate = new double[7,2, 10000];
+        bool[,] condizioni = new bool[7,10000];
+        string funzione = "";
 
         PlotView pv = new PlotView();
 
         PlotModel model = new PlotModel();
         
-        FunctionSeries fs = new FunctionSeries();
         FunctionSeries x = new FunctionSeries();
         FunctionSeries y = new FunctionSeries();
         FunctionSeries fx1 = new FunctionSeries();
@@ -64,12 +64,11 @@ namespace BorelliMosconiFunzioni
 
             if (controllo == 1)
             {
-                //MessageBox.Show($"MINIMO: {Convert.ToString(ymin)}");
-                //MessageBox.Show($"MAXIMO 1-2 GIORNI: {Convert.ToString(ymax)}");
+                FunctionSeries fs = new FunctionSeries();
                 var yAxis = new OxyPlot.Axes.LinearAxis();
                 var xAxis = new OxyPlot.Axes.LinearAxis();
-                xAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
 
+                xAxis.Position = OxyPlot.Axes.AxisPosition.Bottom;
                 yAxis.Position = OxyPlot.Axes.AxisPosition.Left; //mio
 
                 pv.Model = model; //pv è il vostro oggetto esistente, assegniamo il model cui sopra
@@ -77,80 +76,49 @@ namespace BorelliMosconiFunzioni
                 pv.Location = new Point(0, 0);
                 pv.Size = new Size(750, 500);
                 Controls.Add(pv);
-
-
+                pv.Model.InvalidatePlot(true);
                 pv.Model = new PlotModel { Title = $"GRAFICO DELLA FUNZIONE {textBox2.Text}" };
 
                 pv.Model.Axes.Add(xAxis);//mio
-
-
                 pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
 
-
-                x.Points.Add(new DataPoint(0, -10000));
-                x.Points.Add(new DataPoint(0, 10000));
+                x.Points.Add(new DataPoint(0, -100000));
+                x.Points.Add(new DataPoint(0, 100000));
 
                 OxyColor ciao = new OxyColor(); //trovato abbastanza a caso senza stack overflow
                 ciao = OxyColor.FromArgb(255,0,0,0);
                 x.Color = ciao;
                 pv.Model.Series.Add(x);
 
-                y.Points.Add(new DataPoint(-10000,0));
-                y.Points.Add(new DataPoint(10000,0));
+                y.Points.Add(new DataPoint(-100000, 0));
+                y.Points.Add(new DataPoint(100000, 0));
                 y.Color = ciao;
                 pv.Model.Series.Add(y);
-                for (int i = 1; i < range; i++)
+                for (int InDiCe = 0; InDiCe < 1; InDiCe++)
                 {
-                    if (condizioni[i]==false) //se non è la condizione di esistenza interrompo linea
-                        fs.Points.Add(new DataPoint(coordinate[0, i], coordinate[1, i]));
-                    else
-                        fs.Points.Add(DataPoint.Undefined);                    
+                    DisegnaPunti(fs,pv, InDiCe, range, condizioni, coordinate);
                 }
-
-                pv.Model.Series.Add(fs);
+                
 
                 pv.Model.Axes[1].Minimum = -100;  //[1]=Y  [0] = X
                 pv.Model.Axes[1].Maximum = 100; 
                 pv.Model.Axes[0].Minimum = -100; 
                 pv.Model.Axes[0].Maximum = 100;
 
-                pv.Model.Axes[0].AbsoluteMinimum = coordinate[0, 0]-0.25;
-                pv.Model.Axes[0].AbsoluteMaximum = coordinate[0, (coordinate.GetLength(1)-1)]+0.25;
-                pv.Model.Axes[1].AbsoluteMinimum = ymin-0.25;
-                pv.Model.Axes[1].AbsoluteMaximum = ymax+0.25;
+                pv.Model.Axes[0].AbsoluteMinimum = coordinate[0,0, 0]-0.5;
+                pv.Model.Axes[0].AbsoluteMaximum = coordinate[0, 0, (coordinate.GetLength(2)-1)]+0.5;
+                pv.Model.Axes[1].AbsoluteMinimum = ymin-0.5;
+                pv.Model.Axes[1].AbsoluteMaximum = ymax+0.5;
 
             }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            string funzione = textBox2.Text;
-            int contatore = 0;
-            double x = -(range/2)*aumentoX;
-            double xCiao = x;
-            funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
-            string backup = funzione;
+            funzione = textBox2.Text;
 
-            while (contatore < range)
-            {
-                funzione = backup;
-                try
-                {
-                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX);
-                }
-                catch
-                {
-                    condizioni[contatore] = true;
-                }
-
-                xCiao =x- aumentoX;
-                if (condizioni[contatore] != true)
-                {
-                    Risoluzione(ref funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX);
-                    controllo = 1;
-                }
-                contatore++;
-            }
+            TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo);
+           
             Form1_Load(sender, e);
         }
 
@@ -187,7 +155,14 @@ namespace BorelliMosconiFunzioni
             }
             return RisFin;
         }
-        public static void Risoluzione(ref string funzione, double[,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX)
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            string backup = funzione;
+
+        }
+
+        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX, int IndiceTrasformazione)
         {
             double y = 0;
             if (condizione == 1)
@@ -218,21 +193,69 @@ namespace BorelliMosconiFunzioni
 
             if (condizione == 0) //se non è la volta in cui entro nel ciclo solo per controllare le condizioni
             {
-                coordinata[0, contatore] = x - aumentoX;
-                coordinata[1, contatore] = y;
+                coordinata[IndiceTrasformazione,0, contatore] = x - aumentoX;
+                coordinata[IndiceTrasformazione,1, contatore] = y;
             }
             contatore++;
         }
 
+        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double [,,]coordinate, ref double ymin, ref double ymax, bool[,]condizioni, int indice, ref int controllo)
+        {
+            int contatore = 0;
+            double x = -(range / 2) * aumentoX;
+            double xCiao = x;
+            funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
+            string backup = funzione;
+
+            while (contatore < range)
+            {
+                funzione = backup;
+                try
+                {
+                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX, indice);
+                }
+                catch
+                {
+                    condizioni[indice,contatore] = true;
+                }
+
+                xCiao = x - aumentoX;
+                if (condizioni[indice, contatore] != true)
+                {
+                    Risoluzione(ref funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX, indice);
+                    controllo = 1;
+                }
+                contatore++;
+            }
+        }
+
+        public static void DisegnaPunti(FunctionSeries punti, PlotView pd,int InDiCe, int range, bool[,] condizioni, double[,,] coordinate)
+        {
+            for (int i = 1; i < range; i++)
+            {
+                if (condizioni[/*InDiCe*/0, i] == false) //se non è la condizione di esistenza interrompo linea
+                    punti.Points.Add(new DataPoint(coordinate[/*InDiCe*/0, 0, i], coordinate[/*InDiCe*/0, 1, i]));
+                else
+                    punti.Points.Add(DataPoint.Undefined);
+            }
+            pd.Model.Series.Add(punti);
+        }
+
         private void button3_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < coordinate.GetLength(0); i++)
+            {
+                for (int j = 0; j < coordinate.GetLength(1); j++)
+                {
+                    coordinate[0, i, j] = 0;
+                    condizioni[0,j] = false;
+                }
+            }
             pv.Model.Series.Clear();
+            pv.Model.InvalidatePlot(true);
+            controllo = 0;
             pv.Refresh();
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
