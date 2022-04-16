@@ -22,12 +22,12 @@ namespace BorelliMosconiFunzioni
 {
     public partial class Form1 : Form
     {
-        int[] premuto = new int[7] {0,0,0,0,0,0,0};
+        int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
         int controllo = 0;
-        int range = 10000;
+        int range = 50000;
         double aumentoX = 0.25, ymin = 0, ymax = 0;
-        double[,,] coordinate = new double[7,2, 10000];
-        bool[,] condizioni = new bool[7,10000];
+        double[,,] coordinate = new double[7, 2, 50000];
+        bool[,] condizioni = new bool[7, 50000];
         string funzione = "";
 
         PlotView pv = new PlotView();
@@ -54,7 +54,6 @@ namespace BorelliMosconiFunzioni
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
-
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 
 
@@ -88,30 +87,32 @@ namespace BorelliMosconiFunzioni
                 pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
 
                 x.Points.Add(new DataPoint(0, -100000));
+                x.Points.Add(new DataPoint(0, 0));
                 x.Points.Add(new DataPoint(0, 100000));
                 x.Color = OxyColor.FromArgb(255, 0, 0, 0); ;
                 pv.Model.Series.Add(x);
 
                 y.Points.Add(new DataPoint(-100000, 0));
+                y.Points.Add(new DataPoint(0, 0));
                 y.Points.Add(new DataPoint(100000, 0));
                 y.Color = OxyColor.FromArgb(255, 0, 0, 0); ;
                 pv.Model.Series.Add(y);
 
                 for (int InDiCe = 0; InDiCe < 7; InDiCe++)
                 {
-                    if (InDiCe==0)
-                        DisegnaPunti(fs,pv, InDiCe, range, condizioni, coordinate);
-                    else if (InDiCe==1)
+                    if (InDiCe == 0)
+                        DisegnaPunti(fs, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 1 && (premuto[InDiCe] - 1) % 2 == 0) //-1 perchè guardo quello da cui veniva prima, non quello è appena diventato lo stato attuale
                         DisegnaPunti(fx1, pv, InDiCe, range, condizioni, coordinate);
-                    else if (InDiCe == 2)
+                    else if (InDiCe == 2 && (premuto[InDiCe] - 1) % 2 == 0)
                         DisegnaPunti(fx2, pv, InDiCe, range, condizioni, coordinate);
-                    else if (InDiCe == 3)
+                    else if (InDiCe == 3 && (premuto[InDiCe] - 1) % 2 == 0)
                         DisegnaPunti(fx3, pv, InDiCe, range, condizioni, coordinate);
-                    else if (InDiCe == 4)
+                    else if (InDiCe == 4 && (premuto[InDiCe] - 1) % 2 == 0)
                         DisegnaPunti(absf1, pv, InDiCe, range, condizioni, coordinate);
-                    else if (InDiCe == 5)
+                    else if (InDiCe == 5 && (premuto[InDiCe] - 1) % 2 == 0)
                         DisegnaPunti(absf2, pv, InDiCe, range, condizioni, coordinate);
-                    else if (InDiCe == 6)
+                    else if (InDiCe == 6 && (premuto[InDiCe] - 1) % 2 == 0)
                         DisegnaPunti(absf3, pv, InDiCe, range, condizioni, coordinate);
                 }
 
@@ -122,10 +123,10 @@ namespace BorelliMosconiFunzioni
 
                 pv.Refresh();
 
-                /*pv.Model.Axes[0].AbsoluteMinimum = coordinate[0,0, 0]-0.5;
-                pv.Model.Axes[0].AbsoluteMaximum = coordinate[0, 0, (coordinate.GetLength(2)-1)]+0.5;
-                pv.Model.Axes[1].AbsoluteMinimum = ymin-0.5;
-                pv.Model.Axes[1].AbsoluteMaximum = ymax+0.5;*/
+                pv.Model.Axes[0].AbsoluteMinimum = coordinate[0, 0, 0] - 5;
+                pv.Model.Axes[0].AbsoluteMaximum = coordinate[0, 0, (coordinate.GetLength(2) - 1)] + 5;
+                pv.Model.Axes[1].AbsoluteMinimum = ymin - 0.5;
+                pv.Model.Axes[1].AbsoluteMaximum = ymax + 0.5;
 
             }
         }
@@ -143,7 +144,8 @@ namespace BorelliMosconiFunzioni
                     }
                 }
             }
-
+            premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
+            textBox2.Text = "";
             pv.Model.Series.Clear();
             pv.Model.InvalidatePlot(true);
             controllo = 0;
@@ -158,43 +160,57 @@ namespace BorelliMosconiFunzioni
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
-            if (premuto[1]-1==0)
-                Form1_Load(sender, e);
+            if (controllo >= 1)
+                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            else
+                checkBox1.Checked = false;
+            Form1_Load(sender, e);
+
+
         }
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
-            if (premuto[2] - 1 == 0)
-                Form1_Load(sender, e);
+            if (controllo >= 1)
+                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            else
+                checkBox2.Checked = false;
+            Form1_Load(sender, e);
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
-            if (premuto[3] - 1 == 0)
-                Form1_Load(sender, e);
+            if (controllo >= 1)
+                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            else
+                checkBox3.Checked = false;
+            Form1_Load(sender, e);
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
-            PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
-            if (premuto[4] - 1 == 0)
-                Form1_Load(sender, e);
+            if (controllo >= 1)
+                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            else
+                checkBox4.Checked = false;
+            Form1_Load(sender, e);
         }
 
         private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
-            PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
-            if (premuto[5] - 1 == 0)
-                Form1_Load(sender, e);
+            if (controllo >= 1)
+                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            else
+                checkBox5.Checked = false;
+            Form1_Load(sender, e);
         }
 
         private void checkBox6_CheckedChanged(object sender, EventArgs e)
         {
-            PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
-            if (premuto[6] - 1 == 0)
-                Form1_Load(sender, e);
+            if (controllo >= 1)
+                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            else
+                checkBox6.Checked = false;
+            Form1_Load(sender, e);
         }
 
         public static string DenominatoreParentesi(string Funzione) //aggiungiamo un +0 prima della chiusera di ogni parentesi
@@ -321,20 +337,15 @@ namespace BorelliMosconiFunzioni
             }
         }
 
-        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[]premuto, string funzione, int range, double aumentoX, double [,,]coordinate, ref double ymin, ref double ymax, bool [,] condizioni, ref int controllo)
+        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo)
         {
             if (premuto[indice] == 0) //se è la prima volta calcolo 
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, indice, ref controllo);
             else if (premuto[indice] % 2 == 1) //se il num è dispari vuol dire che sto disattivando il bottone quindi rendo linea invisibile
-            {
                 InsiemeDiCirconferenze.LineStyle = LineStyle.None;
-                pci.Refresh();
-            }
             else //sennò la rendo visibile
-            {
                 InsiemeDiCirconferenze.LineStyle = LineStyle.Solid;
-                pci.Refresh();
-            }
+
             premuto[indice]++; //aumento contatore
         }
 
