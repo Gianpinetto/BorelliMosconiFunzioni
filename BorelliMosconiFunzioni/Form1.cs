@@ -28,7 +28,7 @@ namespace BorelliMosconiFunzioni
 
     public partial class Form1 : Form
     {
-
+        int[] premuto = new int[7] {0,0,0,0,0,0,0};
         int controllo = 0;
         int range = 10000;
         double aumentoX = 0.25, ymin = 0, ymax = 0;
@@ -39,7 +39,8 @@ namespace BorelliMosconiFunzioni
         PlotView pv = new PlotView();
 
         PlotModel model = new PlotModel();
-        
+
+        FunctionSeries fs = new FunctionSeries();
         FunctionSeries x = new FunctionSeries();
         FunctionSeries y = new FunctionSeries();
         FunctionSeries fx1 = new FunctionSeries();
@@ -48,6 +49,7 @@ namespace BorelliMosconiFunzioni
         FunctionSeries absf1 = new FunctionSeries();
         FunctionSeries absf2 = new FunctionSeries();
         FunctionSeries absf3 = new FunctionSeries();
+
 
         public Form1()
         {
@@ -64,7 +66,16 @@ namespace BorelliMosconiFunzioni
 
             if (controllo == 1)
             {
-                FunctionSeries fs = new FunctionSeries();
+                fs = new FunctionSeries();
+                x = new FunctionSeries();
+                y = new FunctionSeries();
+                fx1 = new FunctionSeries();
+                fx2 = new FunctionSeries();
+                fx3 = new FunctionSeries();
+                absf1 = new FunctionSeries();
+                absf2 = new FunctionSeries();
+                absf3 = new FunctionSeries();
+
                 var yAxis = new OxyPlot.Axes.LinearAxis();
                 var xAxis = new OxyPlot.Axes.LinearAxis();
 
@@ -94,11 +105,25 @@ namespace BorelliMosconiFunzioni
                 y.Points.Add(new DataPoint(100000, 0));
                 y.Color = ciao;
                 pv.Model.Series.Add(y);
-                for (int InDiCe = 0; InDiCe < 1; InDiCe++)
+                for (int InDiCe = 0; InDiCe < 7; InDiCe++)
                 {
-                    DisegnaPunti(fs,pv, InDiCe, range, condizioni, coordinate);
+                    if (InDiCe==0)
+                        DisegnaPunti(fs,pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe==1)
+                        DisegnaPunti(fx1, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 2)
+                        DisegnaPunti(fx2, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 3)
+                        DisegnaPunti(fx3, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 4)
+                        DisegnaPunti(absf1, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 5)
+                        DisegnaPunti(absf2, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 6)
+                        DisegnaPunti(absf3, pv, InDiCe, range, condizioni, coordinate);
                 }
-                
+                pv.Refresh();
+
 
                 pv.Model.Axes[1].Minimum = -100;  //[1]=Y  [0] = X
                 pv.Model.Axes[1].Maximum = 100; 
@@ -116,9 +141,7 @@ namespace BorelliMosconiFunzioni
         private void button1_Click_1(object sender, EventArgs e)
         {
             funzione = textBox2.Text;
-
             TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo);
-           
             Form1_Load(sender, e);
         }
 
@@ -158,83 +181,23 @@ namespace BorelliMosconiFunzioni
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            string backup = funzione;
-
+            PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            if (premuto[1]-1==0)
+                Form1_Load(sender, e);
         }
-
-        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX, int IndiceTrasformazione)
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            double y = 0;
-            if (condizione == 1)
-            {
-                string xStringa = "";
-                xStringa = Convert.ToString(x);
-                xStringa = Regex.Replace(xStringa, "[,]", "."); //converto la virgola in punto perchè sennò da errore
-
-                for (int i = 0; i < funzione.Length; i++)
-                {
-                    if (funzione.Substring(i, 1).ToUpper() == "X")
-                    {
-                        funzione = funzione.Remove(i, 1); //tolgo la x
-                        funzione = funzione.Insert(i, $"*({xStringa})"); //rimpiazzo con "*"+ il numero al momento
-                    }
-                }
-            }
-            
-            Expression expr = new Expression(funzione);
-            x += aumentoX;
-            var value = expr.Eval(); //calcolo il valore della nuova espressione
-            y = Convert.ToDouble(value); //converto in double
-
-            if (y < ymin)
-                ymin = y;
-            if (y > ymax)
-                ymax = y;
-
-            if (condizione == 0) //se non è la volta in cui entro nel ciclo solo per controllare le condizioni
-            {
-                coordinata[IndiceTrasformazione,0, contatore] = x - aumentoX;
-                coordinata[IndiceTrasformazione,1, contatore] = y;
-            }
-            contatore++;
-        }
-
-        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double [,,]coordinate, ref double ymin, ref double ymax, bool[,]condizioni, int indice, ref int controllo)
-        {
-            int contatore = 0;
-            double x = -(range / 2) * aumentoX;
-            double xCiao = x;
-            funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
-            string backup = funzione;
-
-            while (contatore < range)
-            {
-                funzione = backup;
-                try
-                {
-                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX, indice);
-                }
-                catch
-                {
-                    condizioni[indice,contatore] = true;
-                }
-
-                xCiao = x - aumentoX;
-                if (condizioni[indice, contatore] != true)
-                {
-                    Risoluzione(ref funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX, indice);
-                    controllo = 1;
-                }
-                contatore++;
-            }
+            PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            if (premuto[2] - 1 == 0)
+                Form1_Load(sender, e);
         }
 
         public static void DisegnaPunti(FunctionSeries punti, PlotView pd,int InDiCe, int range, bool[,] condizioni, double[,,] coordinate)
         {
             for (int i = 1; i < range; i++)
             {
-                if (condizioni[/*InDiCe*/0, i] == false) //se non è la condizione di esistenza interrompo linea
-                    punti.Points.Add(new DataPoint(coordinate[/*InDiCe*/0, 0, i], coordinate[/*InDiCe*/0, 1, i]));
+                if (condizioni[InDiCe, i] == false) //se non è la condizione di esistenza interrompo linea
+                    punti.Points.Add(new DataPoint(coordinate[InDiCe, 0, i], coordinate[InDiCe, 1, i]));
                 else
                     punti.Points.Add(DataPoint.Undefined);
             }
@@ -255,6 +218,132 @@ namespace BorelliMosconiFunzioni
             pv.Model.InvalidatePlot(true);
             controllo = 0;
             pv.Refresh();
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            if (premuto[3] - 1 == 0)
+                Form1_Load(sender, e);
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            if (premuto[4] - 1 == 0)
+                Form1_Load(sender, e);
+        }
+
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            if (premuto[5] - 1 == 0)
+                Form1_Load(sender, e);
+        }
+
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+            if (premuto[6] - 1 == 0)
+                Form1_Load(sender, e);
+        }
+
+        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX, int IndiceTrasformazione)
+        {
+            double y = 0;
+            if (condizione == 1)
+            {
+                string xStringa = "";
+                xStringa = Convert.ToString(x);
+                xStringa = Regex.Replace(xStringa, "[,]", "."); //converto la virgola in punto perchè sennò da errore
+
+                for (int i = 0; i < funzione.Length; i++)
+                {
+                    if (funzione.Substring(i, 1).ToUpper() == "X")
+                    {
+                        funzione = funzione.Remove(i, 1); //tolgo la x
+
+                        if (IndiceTrasformazione == 0 || IndiceTrasformazione == 2 || IndiceTrasformazione == 5)
+                            funzione = funzione.Insert(i, $"*({xStringa})"); //rimpiazzo con "*"+ il numero al momento
+                        else if (IndiceTrasformazione == 1 || IndiceTrasformazione == 3)
+                            funzione = funzione.Insert(i, $"*((-{xStringa}))");
+                        else if (IndiceTrasformazione == 4 || IndiceTrasformazione == 6)
+                            funzione = funzione.Insert(i, $"*(abs({xStringa}))");
+                    }
+                }
+            }
+
+            Expression expr = new Expression(funzione);
+            x += aumentoX;
+            var value = expr.Eval(); //calcolo il valore della nuova espressione
+            y = Convert.ToDouble(value); //converto in double
+
+            if (IndiceTrasformazione == 2 || IndiceTrasformazione == 3)
+                y = -y;
+            else if (IndiceTrasformazione == 5 || IndiceTrasformazione == 6)
+                y = Math.Abs(y);
+
+
+            if (y < ymin)
+                ymin = y;
+            if (y > ymax)
+                ymax = y;
+
+            if (condizione == 0) //se non è la volta in cui entro nel ciclo solo per controllare le condizioni
+            {
+                coordinata[IndiceTrasformazione, 0, contatore] = x - aumentoX;
+                coordinata[IndiceTrasformazione, 1, contatore] = y;
+            }
+            contatore++;
+        }
+
+        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, int indice, ref int controllo)
+        {
+            int contatore = 0;
+            double x = -(range / 2) * aumentoX;
+            double xCiao = x;
+            funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
+            string backup = funzione;
+
+            while (contatore < range)
+            {
+                funzione = backup;
+                try
+                {
+                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX, indice);
+                }
+                catch
+                {
+                    condizioni[indice, contatore] = true;
+                }
+
+                xCiao = x - aumentoX;
+                if (condizioni[indice, contatore] != true)
+                {
+                    Risoluzione(ref funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX, indice);
+                    controllo = 1;
+                }
+                contatore++;
+            }
+        }
+
+        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[]premuto, string funzione, int range, double aumentoX, double [,,]coordinate, ref double ymin, ref double ymax, bool [,] condizioni, ref int controllo)
+        {
+            if (premuto[indice] == 0)
+            {
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, indice, ref controllo);
+            }
+            else if (premuto[indice] % 2 == 1)
+            {
+                InsiemeDiCirconferenze.LineStyle = LineStyle.None;
+                pci.Refresh();
+            }
+            else
+            {
+                InsiemeDiCirconferenze.LineStyle = LineStyle.Solid;
+                pci.Refresh();
+            }
+            premuto[indice]++;
         }
 
     }

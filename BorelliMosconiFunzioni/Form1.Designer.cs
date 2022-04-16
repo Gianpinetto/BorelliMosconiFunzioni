@@ -97,6 +97,7 @@ namespace BorelliMosconiFunzioni
             this.checkBox2.TabIndex = 9;
             this.checkBox2.Text = "-f(x) [SIMM. x]";
             this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // checkBox3
             // 
@@ -108,6 +109,7 @@ namespace BorelliMosconiFunzioni
             this.checkBox3.TabIndex = 10;
             this.checkBox3.Text = "-f(-x) [SIMM. Orig]";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // checkBox4
             // 
@@ -119,6 +121,7 @@ namespace BorelliMosconiFunzioni
             this.checkBox4.TabIndex = 11;
             this.checkBox4.Text = "f(|x|) [SIMM. y]";
             this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // checkBox5
             // 
@@ -130,6 +133,7 @@ namespace BorelliMosconiFunzioni
             this.checkBox5.TabIndex = 12;
             this.checkBox5.Text = "|f(x)| [SIMM. x]";
             this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
             // 
             // checkBox6
             // 
@@ -141,6 +145,7 @@ namespace BorelliMosconiFunzioni
             this.checkBox6.TabIndex = 13;
             this.checkBox6.Text = "|f(|x|)| [SIMM. y]";
             this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkBox6.CheckedChanged += new System.EventHandler(this.checkBox6_CheckedChanged);
             // 
             // button3
             // 
