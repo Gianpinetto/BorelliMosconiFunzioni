@@ -178,7 +178,7 @@ namespace BorelliMosconiFunzioni
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "GRAPH V-0.2.1";
+            this.Text = "GRAPH V-0.2.3";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
