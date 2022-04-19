@@ -25,7 +25,7 @@ namespace BorelliMosconiFunzioni
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
         int controllo = 0;
         int range = 50000;
-        double aumentoX = 0.25, ymin = 0, ymax = 0;
+        double aumentoX = 0.25, ymin = 0, ymax = 0, xmin=0, xmax=0;
         double[,,] coordinate = new double[7, 2, 50000];
         bool[,] condizioni = new bool[7, 50000];
         string funzione = "";
@@ -57,7 +57,7 @@ namespace BorelliMosconiFunzioni
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 
 
-            if (controllo == 1)
+            if (controllo >= 1)
             {
                 fs = new FunctionSeries();
                 x = new FunctionSeries();
@@ -120,13 +120,13 @@ namespace BorelliMosconiFunzioni
                 pv.Model.Axes[1].Maximum = 100;
                 pv.Model.Axes[0].Minimum = -100;
                 pv.Model.Axes[0].Maximum = 100;
+                //pv.Refresh(); //non so se vada tenuto
+                //MessageBox.Show($"X MIN:{Convert.ToString(xmin)} X MAX:{xmax}");
 
-                pv.Refresh();
-
-                pv.Model.Axes[0].AbsoluteMinimum = coordinate[0, 0, 0] - 5;
-                pv.Model.Axes[0].AbsoluteMaximum = coordinate[0, 0, (coordinate.GetLength(2) - 1)] + 5;
-                pv.Model.Axes[1].AbsoluteMinimum = ymin - 0.5;
-                pv.Model.Axes[1].AbsoluteMaximum = ymax + 0.5;
+                pv.Model.Axes[0].AbsoluteMinimum = xmin  - 5;
+                pv.Model.Axes[0].AbsoluteMaximum = xmax + 5;
+                pv.Model.Axes[1].AbsoluteMinimum = ymin - 5;
+                pv.Model.Axes[1].AbsoluteMaximum = ymax + 5;
 
             }
         }
@@ -154,14 +154,14 @@ namespace BorelliMosconiFunzioni
         private void button1_Click_1(object sender, EventArgs e)
         {
             funzione = textBox2.Text;
-            TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo);
+            TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
             Form1_Load(sender, e);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax);
             else
                 checkBox1.Checked = false;
             Form1_Load(sender, e);
@@ -171,7 +171,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax);
             else
                 checkBox2.Checked = false;
             Form1_Load(sender, e);
@@ -180,7 +180,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax);
             else
                 checkBox3.Checked = false;
             Form1_Load(sender, e);
@@ -189,7 +189,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax);
             else
                 checkBox4.Checked = false;
             Form1_Load(sender, e);
@@ -198,7 +198,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax);
             else
                 checkBox5.Checked = false;
             Form1_Load(sender, e);
@@ -207,7 +207,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox6_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo);
+                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax);
             else
                 checkBox6.Checked = false;
             Form1_Load(sender, e);
@@ -258,7 +258,7 @@ namespace BorelliMosconiFunzioni
             pd.Model.Series.Add(punti);
         }
 
-        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX, int IndiceTrasformazione)
+        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX, int IndiceTrasformazione, ref double xMacs, ref double xMin)
         {
             double y = 0; //1=f(-x); 2= -f(x); 3= -f(-x); 4= f(abs(x)); 5= abs(f(x)); 6=abs(f(abs(x)))
             if (condizione == 1)
@@ -283,6 +283,8 @@ namespace BorelliMosconiFunzioni
                 }
             }
 
+
+
             Expression expr = new Expression(funzione);
             x += aumentoX;
             var value = expr.Eval(); //calcolo il valore della nuova espressione
@@ -301,13 +303,18 @@ namespace BorelliMosconiFunzioni
 
             if (condizione == 0) //se non è la volta in cui entro nel ciclo solo per controllare le condizioni
             {
+                if (x < xMin)
+                    xMin = x;
+                else if (x > xMacs)
+                    xMacs = x;
+
                 coordinata[IndiceTrasformazione, 0, contatore] = x - aumentoX;
                 coordinata[IndiceTrasformazione, 1, contatore] = y;
             }
             contatore++;
         }
 
-        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, int indice, ref int controllo)
+        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, int indice, ref int controllo, ref double xmax, ref double xmin)
         {//questa funione trova sia i punti che le condizioni di esistenza della funzione appena passata 
             int contatore = 0;
             double x = -(range / 2) * aumentoX; //in questo modo con questa formula trovo sempre metà tra positivo e negativo
@@ -320,7 +327,7 @@ namespace BorelliMosconiFunzioni
                 funzione = backup; //sennò mi ha sostituito la "x" e io non la cambio più
                 try
                 {
-                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX, indice); //provo a risolvere
+                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX, indice, ref xmin, ref xmax); //provo a risolvere
                 }
                 catch
                 {
@@ -329,18 +336,16 @@ namespace BorelliMosconiFunzioni
 
                 xCiao = x - aumentoX; //tolgo di nuovo l'aumento perchè sotto se è possibile ricalcolo subito ed essendo ref ha già aumentato da solo
                 if (condizioni[indice, contatore] != true) //se la condizione lo permette calcolo subito
-                {
-                    Risoluzione(ref funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX, indice);
-                    controllo = 1;
-                }
+                    Risoluzione(ref funzione, coordinate, contatore, ref xCiao, 0, ref ymin, ref ymax, aumentoX, indice, ref xmin, ref xmax);
                 contatore++;
             }
+            controllo++;
         }
 
-        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo)
+        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo,ref double xmin, ref double xmax)
         {
             if (premuto[indice] == 0) //se è la prima volta calcolo 
-                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, indice, ref controllo);
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, indice, ref controllo, ref xmin, ref xmax);
             else if (premuto[indice] % 2 == 1) //se il num è dispari vuol dire che sto disattivando il bottone quindi rendo linea invisibile
                 InsiemeDiCirconferenze.LineStyle = LineStyle.None;
             else //sennò la rendo visibile
