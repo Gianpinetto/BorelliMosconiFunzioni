@@ -149,7 +149,7 @@ namespace BorelliMosconiFunzioni
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(907, 356);
+            this.button3.Location = new System.Drawing.Point(1110, 117);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(85, 42);
             this.button3.TabIndex = 15;
