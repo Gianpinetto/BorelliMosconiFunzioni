@@ -31,7 +31,7 @@ namespace BorelliMosconiFunzioni
 
         double[,] possibilicoordinate = new double[2, 50000];
 
-        string funzione = "";
+        string funzione = " ";
 
         PlotView pv = new PlotView();
 
@@ -160,8 +160,9 @@ namespace BorelliMosconiFunzioni
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
-            funzione = textBox2.Text;
+            funzione += textBox2.Text;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
+            funzione = AggiungiUno(funzione);
             TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
             Form1_Load(sender, e);
         }
@@ -252,6 +253,29 @@ namespace BorelliMosconiFunzioni
                 }
             }
             return RisFin;
+        }
+
+        public static string AggiungiUno(string Funzione)
+        {
+            for (int i = 0; i < Funzione.Length; i++)
+            {
+                if (Funzione.Substring(i, 1).ToUpper() == "X")
+                {
+                    int j = i - 1;// i= pos di x
+                    if (Funzione.Substring(j, 1).ToUpper() != "1" &&
+                        Funzione.Substring(j, 1).ToUpper() != "2" && Funzione.Substring(j, 1).ToUpper() != "3" &&
+                        Funzione.Substring(j, 1).ToUpper() != "4" && Funzione.Substring(j, 1).ToUpper() != "5" &&
+                        Funzione.Substring(j, 1).ToUpper() != "6" && Funzione.Substring(j, 1).ToUpper() != "7" &&
+                        Funzione.Substring(j, 1).ToUpper() != "8" && Funzione.Substring(j, 1).ToUpper() != "9" &&
+                        Funzione.Substring(j, 1).ToUpper() != "0")
+                    {
+                        Funzione = Funzione.Insert(j + 1, "1");
+                    }
+
+                    i++;
+                }
+            }
+            return Funzione;
         }
 
         public static void DisegnaPunti(FunctionSeries punti, PlotView pd, int InDiCe, int range, bool[,] condizioni, double[,,] coordinate)
