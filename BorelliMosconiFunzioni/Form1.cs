@@ -95,15 +95,15 @@ namespace BorelliMosconiFunzioni
                 pv.Model.Axes.Add(xAxis);//mio
                 pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
 
-                x.Points.Add(new DataPoint(0, -100000));
+                x.Points.Add(new DataPoint(0, ymin));
                 x.Points.Add(new DataPoint(0, 0));
-                x.Points.Add(new DataPoint(0, 100000));
+                x.Points.Add(new DataPoint(0, ymax));
                 x.Color = OxyColor.FromArgb(255, 0, 0, 0);
                 pv.Model.Series.Add(x);
 
-                y.Points.Add(new DataPoint(-100000, 0));
+                y.Points.Add(new DataPoint(xmin, 0));
                 y.Points.Add(new DataPoint(0, 0));
-                y.Points.Add(new DataPoint(100000, 0));
+                y.Points.Add(new DataPoint(xmax, 0));
                 y.Color = OxyColor.FromArgb(255, 0, 0, 0);
                 pv.Model.Series.Add(y);
 
