@@ -58,82 +58,82 @@ namespace BorelliMosconiFunzioni
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
-                if (controllo >= 1)
+            if (controllo >= 1)
+            {
+                fs = new FunctionSeries();
+                x = new FunctionSeries();
+                y = new FunctionSeries();
+                fx1 = new FunctionSeries();
+                fx1.Color = OxyColor.FromArgb(255, 255, 0, 0);
+                fx2 = new FunctionSeries();
+                fx2.Color = OxyColor.FromArgb(255, 255, 128, 0);
+                fx3 = new FunctionSeries();
+                fx3.Color = OxyColor.FromArgb(255, 255, 255, 0);
+                absf1 = new FunctionSeries();
+                absf1.Color = OxyColor.FromArgb(255, 0, 255, 255);
+                absf2 = new FunctionSeries();
+                absf2.Color = OxyColor.FromArgb(255, 0, 0, 255);
+                absf3 = new FunctionSeries();
+                absf3.Color = OxyColor.FromArgb(255, 255, 51, 255);
+
+                var yAxis = new LinearAxis();
+                var xAxis = new LinearAxis();
+
+                xAxis.Position = AxisPosition.Bottom;
+                yAxis.Position = AxisPosition.Left; //mio
+
+                pv.Model = model; //pv è il vostro oggetto esistente, assegniamo il model cui sopra
+
+                pv.Location = new Point(0, 0);
+                pv.Size = new Size(800, 525);
+                Controls.Add(pv);
+                pv.Model.InvalidatePlot(true);
+                pv.Model = new PlotModel { Title = $"GRAFICO DELLA FUNZIONE {textBox2.Text}" };
+
+                pv.Model.Axes.Add(xAxis);//mio
+                pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
+
+                x.Points.Add(new DataPoint(0, ymin));
+                x.Points.Add(new DataPoint(0, 0));
+                x.Points.Add(new DataPoint(0, ymax));
+                x.Color = OxyColor.FromArgb(255, 0, 0, 0);
+                pv.Model.Series.Add(x);
+
+                y.Points.Add(new DataPoint(xmin, 0));
+                y.Points.Add(new DataPoint(0, 0));
+                y.Points.Add(new DataPoint(xmax, 0));
+                y.Color = OxyColor.FromArgb(255, 0, 0, 0);
+                pv.Model.Series.Add(y);
+
+                for (int InDiCe = 0; InDiCe < 7; InDiCe++)
                 {
-                    fs = new FunctionSeries();
-                    x = new FunctionSeries();
-                    y = new FunctionSeries();
-                    fx1 = new FunctionSeries();
-                    fx1.Color = OxyColor.FromArgb(255, 255, 0, 0);
-                    fx2 = new FunctionSeries();
-                    fx2.Color = OxyColor.FromArgb(255, 255, 128, 0);
-                    fx3 = new FunctionSeries();
-                    fx3.Color = OxyColor.FromArgb(255, 255, 255, 0);
-                    absf1 = new FunctionSeries();
-                    absf1.Color = OxyColor.FromArgb(255, 0, 255, 255);
-                    absf2 = new FunctionSeries();
-                    absf2.Color = OxyColor.FromArgb(255, 0, 0, 255);
-                    absf3 = new FunctionSeries();
-                    absf3.Color = OxyColor.FromArgb(255, 255, 51, 255);
-
-                    var yAxis = new LinearAxis();
-                    var xAxis = new LinearAxis();
-
-                    xAxis.Position = AxisPosition.Bottom;
-                    yAxis.Position = AxisPosition.Left; //mio
-
-                    pv.Model = model; //pv è il vostro oggetto esistente, assegniamo il model cui sopra
-
-                    pv.Location = new Point(0, 0);
-                    pv.Size = new Size(800, 525);
-                    Controls.Add(pv);
-                    pv.Model.InvalidatePlot(true);
-                    pv.Model = new PlotModel { Title = $"GRAFICO DELLA FUNZIONE {textBox2.Text}" };
-
-                    pv.Model.Axes.Add(xAxis);//mio
-                    pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
-
-                    x.Points.Add(new DataPoint(0, ymin));
-                    x.Points.Add(new DataPoint(0, 0));
-                    x.Points.Add(new DataPoint(0, ymax));
-                    x.Color = OxyColor.FromArgb(255, 0, 0, 0);
-                    pv.Model.Series.Add(x);
-
-                    y.Points.Add(new DataPoint(xmin, 0));
-                    y.Points.Add(new DataPoint(0, 0));
-                    y.Points.Add(new DataPoint(xmax, 0));
-                    y.Color = OxyColor.FromArgb(255, 0, 0, 0);
-                    pv.Model.Series.Add(y);
-
-                    for (int InDiCe = 0; InDiCe < 7; InDiCe++)
-                    {
-                        if (InDiCe == 0)
-                            DisegnaPunti(fs, pv, InDiCe, range, condizioni, coordinate);
-                        else if (InDiCe == 1 && (premuto[InDiCe] - 1) % 2 == 0) //-1 perchè guardo quello da cui veniva prima, non quello è appena diventato lo stato attuale
-                            DisegnaPunti(fx1, pv, InDiCe, range, condizioni, coordinate);
-                        else if (InDiCe == 2 && (premuto[InDiCe] - 1) % 2 == 0)
-                            DisegnaPunti(fx2, pv, InDiCe, range, condizioni, coordinate);
-                        else if (InDiCe == 3 && (premuto[InDiCe] - 1) % 2 == 0)
-                            DisegnaPunti(fx3, pv, InDiCe, range, condizioni, coordinate);
-                        else if (InDiCe == 4 && (premuto[InDiCe] - 1) % 2 == 0)
-                            DisegnaPunti(absf1, pv, InDiCe, range, condizioni, coordinate);
-                        else if (InDiCe == 5 && (premuto[InDiCe] - 1) % 2 == 0)
-                            DisegnaPunti(absf2, pv, InDiCe, range, condizioni, coordinate);
-                        else if (InDiCe == 6 && (premuto[InDiCe] - 1) % 2 == 0)
-                            DisegnaPunti(absf3, pv, InDiCe, range, condizioni, coordinate);
-                    }
-
-                    pv.Model.Axes[1].Minimum = -100;  //[1]=Y  [0] = X
-                    pv.Model.Axes[1].Maximum = 100;
-                    pv.Model.Axes[0].Minimum = -100;
-                    pv.Model.Axes[0].Maximum = 100;
-
-                    pv.Model.Axes[0].AbsoluteMinimum = xmin;
-                    pv.Model.Axes[0].AbsoluteMaximum = xmax;
-                    pv.Model.Axes[1].AbsoluteMinimum = ymin;
-                    pv.Model.Axes[1].AbsoluteMaximum = ymax;
-
+                    if (InDiCe == 0)
+                        DisegnaPunti(fs, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 1 && (premuto[InDiCe] - 1) % 2 == 0) //-1 perchè guardo quello da cui veniva prima, non quello è appena diventato lo stato attuale
+                        DisegnaPunti(fx1, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 2 && (premuto[InDiCe] - 1) % 2 == 0)
+                        DisegnaPunti(fx2, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 3 && (premuto[InDiCe] - 1) % 2 == 0)
+                        DisegnaPunti(fx3, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 4 && (premuto[InDiCe] - 1) % 2 == 0)
+                        DisegnaPunti(absf1, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 5 && (premuto[InDiCe] - 1) % 2 == 0)
+                        DisegnaPunti(absf2, pv, InDiCe, range, condizioni, coordinate);
+                    else if (InDiCe == 6 && (premuto[InDiCe] - 1) % 2 == 0)
+                        DisegnaPunti(absf3, pv, InDiCe, range, condizioni, coordinate);
                 }
+
+                pv.Model.Axes[1].Minimum = -100;  //[1]=Y  [0] = X
+                pv.Model.Axes[1].Maximum = 100;
+                pv.Model.Axes[0].Minimum = -100;
+                pv.Model.Axes[0].Maximum = 100;
+
+                pv.Model.Axes[0].AbsoluteMinimum = xmin;
+                pv.Model.Axes[0].AbsoluteMaximum = xmax;
+                pv.Model.Axes[1].AbsoluteMinimum = ymin;
+                pv.Model.Axes[1].AbsoluteMaximum = ymax;
+
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -143,16 +143,27 @@ namespace BorelliMosconiFunzioni
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
-                ResetTutto(coordinate, condizioni, premuto, ref controllo, pv, ref ymin, ref ymax, ref xmin, ref xmax);
-                aumentoX = Impostasiu.precisione2;
-                range = Impostasiu.range2;
+            ResetTutto(coordinate, condizioni, premuto, ref controllo, pv, ref ymin, ref ymax, ref xmin, ref xmax);
+            checkBox1.Checked = false;
+            checkBox2.Checked = false;
+            checkBox3.Checked = false;
+            checkBox4.Checked = false;
+            checkBox5.Checked = false;
+            checkBox6.Checked = false;
 
-                funzione = " ";
-                funzione += textBox2.Text;
-                funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
-                funzione = AggiungiUno(funzione);
-                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
-                Form1_Load(sender, e);
+            aumentoX = Impostasiu.precisione2;
+
+            if (aumentoX == 0)
+                aumentoX = 0.1;
+
+            range = Impostasiu.range2;
+
+            funzione = " ";
+            funzione += textBox2.Text;
+            funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
+            funzione = AggiungiUno(funzione);
+            TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
+            Form1_Load(sender, e);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -373,12 +384,11 @@ namespace BorelliMosconiFunzioni
                         }
                     }
                 }
-                premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
 
-                ymin = 0;
-                ymax = 0;
-                xmin = 0;
-                xmax = 0;
+                for (int i = 0; i < premuto.Length; i++)
+                    premuto[i] = 0;
+
+                ymin = ymax = xmin = xmax = 0;
 
                 pr.Model.Series.Clear();
                 pr.Model.InvalidatePlot(true);
