@@ -103,7 +103,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(420, 276);
+            this.ClientSize = new System.Drawing.Size(420, 188);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.label3);
@@ -111,7 +111,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.trackBar1);
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.Text = "IMPOSTASIÙ";
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
