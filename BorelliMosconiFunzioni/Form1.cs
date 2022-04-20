@@ -22,14 +22,14 @@ namespace BorelliMosconiFunzioni
 {
     public partial class Form1 : Form
     {
+        Form2 Impostasiu = new Form2();
+
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
         int controllo = 0;
-        int range = 50000;
+        int range = 25000;
         double aumentoX = 0.25, ymin = 0, ymax = 0, xmin = 0, xmax = 0;
-        double[,,] coordinate = new double[7, 2, 50000];
-        bool[,] condizioni = new bool[7, 50000];
-
-        double[,] possibilicoordinate = new double[2, 50000];
+        double[,,] coordinate = new double[7, 2, 25000];
+        bool[,] condizioni = new bool[7, 25000];
 
         string funzione = " ";
 
@@ -87,7 +87,7 @@ namespace BorelliMosconiFunzioni
                 pv.Model = model; //pv è il vostro oggetto esistente, assegniamo il model cui sopra
 
                 pv.Location = new Point(0, 0);
-                pv.Size = new Size(750, 500);
+                pv.Size = new Size(800, 525);
                 Controls.Add(pv);
                 pv.Model.InvalidatePlot(true);
                 pv.Model = new PlotModel { Title = $"GRAFICO DELLA FUNZIONE {textBox2.Text}" };
@@ -140,26 +140,16 @@ namespace BorelliMosconiFunzioni
 
         private void button3_Click(object sender, EventArgs e)
         {
-            for (int a = 0; a < coordinate.GetLength(0); a++)
-            {
-                for (int i = 0; i < coordinate.GetLength(1); i++)
-                {
-                    for (int j = 0; j < coordinate.GetLength(2); j++)
-                    {
-                        coordinate[a, i, j] = 0;
-                        condizioni[a, j] = false;
-                    }
-                }
-            }
-            premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
-            textBox2.Text = "";
-            pv.Model.Series.Clear();
-            pv.Model.InvalidatePlot(true);
-            controllo = 0;
-            pv.Refresh();
+            Impostasiu = new Form2();
+            Impostasiu.Show();
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
+            ResetTutto(coordinate, condizioni, premuto, ref controllo, pv, ref ymin, ref ymax, ref xmin, ref xmax);
+            aumentoX = Impostasiu.precisione2;
+            range = Impostasiu.range2;
+
+            funzione = " ";
             funzione += textBox2.Text;
             funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
             funzione = AggiungiUno(funzione);
@@ -262,15 +252,9 @@ namespace BorelliMosconiFunzioni
                 if (Funzione.Substring(i, 1).ToUpper() == "X")
                 {
                     int j = i - 1;// i= pos di x
-                    if (Funzione.Substring(j, 1).ToUpper() != "1" &&
-                        Funzione.Substring(j, 1).ToUpper() != "2" && Funzione.Substring(j, 1).ToUpper() != "3" &&
-                        Funzione.Substring(j, 1).ToUpper() != "4" && Funzione.Substring(j, 1).ToUpper() != "5" &&
-                        Funzione.Substring(j, 1).ToUpper() != "6" && Funzione.Substring(j, 1).ToUpper() != "7" &&
-                        Funzione.Substring(j, 1).ToUpper() != "8" && Funzione.Substring(j, 1).ToUpper() != "9" &&
-                        Funzione.Substring(j, 1).ToUpper() != "0")
-                    {
+
+                    if (Funzione.Substring(j, 1).ToUpper() != "1" && Funzione.Substring(j, 1).ToUpper() != "2" && Funzione.Substring(j, 1).ToUpper() != "3" && Funzione.Substring(j, 1).ToUpper() != "4" && Funzione.Substring(j, 1).ToUpper() != "5" && Funzione.Substring(j, 1).ToUpper() != "6" && Funzione.Substring(j, 1).ToUpper() != "7" && Funzione.Substring(j, 1).ToUpper() != "8" && Funzione.Substring(j, 1).ToUpper() != "9" && Funzione.Substring(j, 1).ToUpper() != "0")
                         Funzione = Funzione.Insert(j + 1, "1");
-                    }
 
                     i++;
                 }
@@ -375,6 +359,34 @@ namespace BorelliMosconiFunzioni
                 InsiemeDiCirconferenze.LineStyle = LineStyle.Solid;
 
             premuto[indice]++; //aumento contatore
+        }
+        public static void ResetTutto(double[,,] coordinate, bool[,] condizioni, int[] premuto, ref int controllo, PlotView pr, ref double ymin, ref double ymax, ref double xmin, ref double xmax)
+        {
+            if (controllo >= 1)
+            {
+                for (int a = 0; a < coordinate.GetLength(0); a++)
+                {
+                    for (int i = 0; i < coordinate.GetLength(1); i++)
+                    {
+                        for (int j = 0; j < coordinate.GetLength(2); j++)
+                        {
+                            coordinate[a, i, j] = 0;
+                            condizioni[a, j] = false;
+                        }
+                    }
+                }
+                premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
+
+                ymin = 0;
+                ymax = 0;
+                xmin = 0;
+                xmax = 0;
+
+                pr.Model.Series.Clear();
+                pr.Model.InvalidatePlot(true);
+                pr.Refresh();
+                controllo = 0;
+            }
         }
 
     }
