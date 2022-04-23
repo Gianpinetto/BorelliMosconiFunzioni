@@ -21,9 +21,10 @@ namespace BorelliMosconiFunzioni
         public Form2()
         {
             InitializeComponent();
+
             precisione2 = 0.25;
             trackBar1.Value = Convert.ToInt32((precisione2 * 100) + 1);
-            label2.Text= $"{precisione2}";
+            label2.Text = $"{precisione2}";
 
             range2 = 25000;
             trackBar2.Value = range2 / 1000;
@@ -34,14 +35,20 @@ namespace BorelliMosconiFunzioni
         {
             label2.Text = Convert.ToString(precisione2);
             precisione = trackBar1.Value;
-            precisione2 = ((precisione+1) / 100);
+            precisione2 = ((precisione + 1) / 100);
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
             label4.Text = $"{range2}";
             range = trackBar2.Value;
-            range2 = (range * 1000)+1000;
+            range2 = (range * 1000) + 1000;
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
         }
     }
 }

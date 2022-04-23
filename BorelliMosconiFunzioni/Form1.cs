@@ -138,7 +138,6 @@ namespace BorelliMosconiFunzioni
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Impostasiu = new Form2();
             Impostasiu.Show();
         }
         private void button1_Click_1(object sender, EventArgs e)
@@ -157,6 +156,9 @@ namespace BorelliMosconiFunzioni
                 aumentoX = 0.1;
 
             range = Impostasiu.range2;
+
+            if (range == 0)
+                range = 1000;
 
             funzione = " ";
             funzione += textBox2.Text;
