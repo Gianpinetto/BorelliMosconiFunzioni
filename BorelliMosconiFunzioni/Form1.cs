@@ -168,6 +168,8 @@ namespace BorelliMosconiFunzioni
                 MessageBox.Show("Inserire una funzione valida");
             else
             {
+                funzione = xInvertita(funzione);
+                funzione = AggiungiSegno(funzione);
                 funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
                 funzione = AggiungiUno(funzione);
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
@@ -443,6 +445,15 @@ namespace BorelliMosconiFunzioni
             int sommaChar = 0, SommaCharRidotto = 0;
             char[] stringaRidotta = funzioneRidotta.ToCharArray();
 
+            for (int i = 0; i < stringa.Length - 1; i++) //due segni vicina
+            {
+                if (((int)stringa[i] == 42 || (int)stringa[i] == 43 || (int)stringa[i] == 45 || (int)stringa[i] == 47 || (int)stringa[i] == 94) &&
+                    ((int)stringa[i + 1] == 42 || (int)stringa[i + 1] == 43 || (int)stringa[i + 1] == 45 || (int)stringa[i + 1] == 47 || (int)stringa[i + 1] == 94)) //42* 43+ 45- 47/ 94=^
+                {
+                    return false;
+                }
+            }
+
             for (int i = 0; i < stringa.Length; i++)
                 sommaChar += (int)stringa[i];
 
@@ -453,8 +464,27 @@ namespace BorelliMosconiFunzioni
                 return false;
             else
                 return true;
-
-
+        }
+        public static string AggiungiSegno(string funzione)
+        {
+            funzione = funzione.ToUpper();
+            for (int i = 0; i < funzione.Length - 1; i++)
+            {
+                if (funzione.Substring(i, 2) == "XX")
+                    funzione = funzione.Insert(i + 1, "*");
+            }
+            return funzione;
+        }
+        public static string xInvertita(string funzione)
+        {
+            for (int i = 0; i < funzione.Length - 1; i++)
+            {
+                if (funzione.Substring(i, 1).ToUpper() == "X" && (funzione.Substring(i + 1, 1) == "9" || funzione.Substring(i + 1, 1) == "8" || funzione.Substring(i + 1, 1) == "7" ||
+                    funzione.Substring(i + 1, 1) == "6" || funzione.Substring(i + 1, 1) == "5" || funzione.Substring(i + 1, 1) == "4" || funzione.Substring(i + 1, 1) == "3" ||
+                    funzione.Substring(i + 1, 1) == "2" || funzione.Substring(i + 1, 1) == "1" || funzione.Substring(i + 1, 1) == "0"))
+                    funzione = funzione.Insert(i + 1, "*");
+            }
+            return funzione;
         }
 
     }
