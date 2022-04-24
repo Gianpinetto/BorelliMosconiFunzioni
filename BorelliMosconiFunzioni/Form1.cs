@@ -228,7 +228,7 @@ namespace BorelliMosconiFunzioni
             string RisFin = Funzione;
             for (int i = 0; i < Funzione.Length - 1; i++)
             {
-                if (Funzione.Substring(i, 1) == "/" && Funzione.Substring(i + 1, 1) != "(") //se c'è denominatore e poi non c'è una tonda
+                if ((Funzione.Substring(i, 1) == "/"|| Funzione.Substring(i, 1) == "^") && Funzione.Substring(i + 1, 1) != "(") //se c'è denominatore e poi non c'è una tonda
                 {
                     RisFin = Funzione.Insert(i + 1, "(");
                     int k = 0;
