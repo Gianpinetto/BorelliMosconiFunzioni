@@ -162,10 +162,17 @@ namespace BorelliMosconiFunzioni
 
             funzione = " ";
             funzione += textBox2.Text;
-            funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
-            funzione = AggiungiUno(funzione);
-            TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
-            Form1_Load(sender, e);
+
+            bool controllOoOoOo = VerificaFunzione(funzione);
+            if (controllOoOoOo == false)
+                MessageBox.Show("Inserire una funzione valida");
+            else
+            {
+                funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
+                funzione = AggiungiUno(funzione);
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
+                Form1_Load(sender, e);
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -390,13 +397,64 @@ namespace BorelliMosconiFunzioni
                 for (int i = 0; i < premuto.Length; i++)
                     premuto[i] = 0;
 
-                ymin = ymax = xmin = xmax = 0;
+                //ymin = ymax = xmin = xmax = 0;
+                ymin = xmin = 0;
+                ymax = xmax = 1;
 
                 pr.Model.Series.Clear();
                 pr.Model.InvalidatePlot(true);
                 pr.Refresh();
                 controllo = 0;
             }
+        }
+        public static bool VerificaFunzione(string funzione)
+        {
+            funzione = funzione.ToUpper();
+            string funzioneRidotta = funzione;
+            //sin, cos, tan, sqrt, abs, cbrt,ln,e, 
+
+            funzioneRidotta = funzioneRidotta.Replace("ABS", ""); //siamo esauriti, abbiamo cercato sta roba per due ore quindi anche se è poco ottimizzata ranges
+            funzioneRidotta = funzioneRidotta.Replace("SIN", "");
+            funzioneRidotta = funzioneRidotta.Replace("COS", "");
+            funzioneRidotta = funzioneRidotta.Replace("TAN", "");
+            funzioneRidotta = funzioneRidotta.Replace("SQRT", "");
+            funzioneRidotta = funzioneRidotta.Replace("LN", "");
+            funzioneRidotta = funzioneRidotta.Replace("E", "");
+            funzioneRidotta = funzioneRidotta.Replace("+", "");
+            funzioneRidotta = funzioneRidotta.Replace("-", "");
+            funzioneRidotta = funzioneRidotta.Replace("*", "");
+            funzioneRidotta = funzioneRidotta.Replace("/", "");
+            funzioneRidotta = funzioneRidotta.Replace("^", "");
+            funzioneRidotta = funzioneRidotta.Replace("(", "");
+            funzioneRidotta = funzioneRidotta.Replace(")", "");
+            funzioneRidotta = funzioneRidotta.Replace("0", "");
+            funzioneRidotta = funzioneRidotta.Replace("1", "");
+            funzioneRidotta = funzioneRidotta.Replace("2", "");
+            funzioneRidotta = funzioneRidotta.Replace("3", "");
+            funzioneRidotta = funzioneRidotta.Replace("4", "");
+            funzioneRidotta = funzioneRidotta.Replace("5", "");
+            funzioneRidotta = funzioneRidotta.Replace("6", "");
+            funzioneRidotta = funzioneRidotta.Replace("7", "");
+            funzioneRidotta = funzioneRidotta.Replace("8", "");
+            funzioneRidotta = funzioneRidotta.Replace("9", "");
+            funzioneRidotta = funzioneRidotta.Replace(".", "");
+
+            char[] stringa = funzione.ToCharArray();
+            int sommaChar = 0, SommaCharRidotto = 0;
+            char[] stringaRidotta = funzioneRidotta.ToCharArray();
+
+            for (int i = 0; i < stringa.Length; i++)
+                sommaChar += (int)stringa[i];
+
+            for (int i = 1; i < stringaRidotta.Length; i++)
+                SommaCharRidotto += (int)stringaRidotta[i];
+
+            if ((sommaChar / stringa.Length) == 32 || (SommaCharRidotto / (stringaRidotta.Length-1)) != 88)
+                return false;
+            else
+                return true;
+
+
         }
 
     }
