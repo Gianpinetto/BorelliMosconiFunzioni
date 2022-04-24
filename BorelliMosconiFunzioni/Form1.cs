@@ -168,8 +168,7 @@ namespace BorelliMosconiFunzioni
                 MessageBox.Show("Inserire una funzione valida");
             else
             {
-                funzione = xInvertita(funzione);
-                funzione = AggiungiSegno(funzione);
+                funzione = AggiungiSegno(funzione); //aggiunge segno tra xx e x+num
                 funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
                 funzione = AggiungiUno(funzione);
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
@@ -441,11 +440,11 @@ namespace BorelliMosconiFunzioni
             funzioneRidotta = funzioneRidotta.Replace("9", "");
             funzioneRidotta = funzioneRidotta.Replace(".", "");
 
-            char[] stringa = funzione.ToCharArray();
+            char[] stringa = funzione.ToCharArray(); //converto in array di char
             int sommaChar = 0, SommaCharRidotto = 0;
             char[] stringaRidotta = funzioneRidotta.ToCharArray();
 
-            for (int i = 0; i < stringa.Length - 1; i++) //due segni vicina
+            for (int i = 0; i < stringa.Length - 1; i++) //due segni vicini
             {
                 if (((int)stringa[i] == 42 || (int)stringa[i] == 43 || (int)stringa[i] == 45 || (int)stringa[i] == 47 || (int)stringa[i] == 94) &&
                     ((int)stringa[i + 1] == 42 || (int)stringa[i + 1] == 43 || (int)stringa[i + 1] == 45 || (int)stringa[i + 1] == 47 || (int)stringa[i + 1] == 94)) //42* 43+ 45- 47/ 94=^
@@ -454,13 +453,13 @@ namespace BorelliMosconiFunzioni
                 }
             }
 
-            for (int i = 0; i < stringa.Length; i++)
+            for (int i = 0; i < stringa.Length; i++) //per calcolare la somma e successivamente la media
                 sommaChar += (int)stringa[i];
 
             for (int i = 1; i < stringaRidotta.Length; i++)
                 SommaCharRidotto += (int)stringaRidotta[i];
 
-            if ((sommaChar / stringa.Length) == 32 || (SommaCharRidotto / (stringaRidotta.Length-1)) != 88)
+            if ((sommaChar / stringa.Length) == 32 || (SommaCharRidotto / (stringaRidotta.Length-1)) != 88) //32= spazio 88=X
                 return false;
             else
                 return true;
@@ -470,18 +469,9 @@ namespace BorelliMosconiFunzioni
             funzione = funzione.ToUpper();
             for (int i = 0; i < funzione.Length - 1; i++)
             {
-                if (funzione.Substring(i, 2) == "XX")
-                    funzione = funzione.Insert(i + 1, "*");
-            }
-            return funzione;
-        }
-        public static string xInvertita(string funzione)
-        {
-            for (int i = 0; i < funzione.Length - 1; i++)
-            {
-                if (funzione.Substring(i, 1).ToUpper() == "X" && (funzione.Substring(i + 1, 1) == "9" || funzione.Substring(i + 1, 1) == "8" || funzione.Substring(i + 1, 1) == "7" ||
+                if ((funzione.Substring(i, 2) == "XX")|| (funzione.Substring(i, 1).ToUpper() == "X" && (funzione.Substring(i + 1, 1) == "9" || funzione.Substring(i + 1, 1) == "8" || funzione.Substring(i + 1, 1) == "7" ||
                     funzione.Substring(i + 1, 1) == "6" || funzione.Substring(i + 1, 1) == "5" || funzione.Substring(i + 1, 1) == "4" || funzione.Substring(i + 1, 1) == "3" ||
-                    funzione.Substring(i + 1, 1) == "2" || funzione.Substring(i + 1, 1) == "1" || funzione.Substring(i + 1, 1) == "0"))
+                    funzione.Substring(i + 1, 1) == "2" || funzione.Substring(i + 1, 1) == "1" || funzione.Substring(i + 1, 1) == "0"))) //se trovo due x attaccate oppure x seguita da un numero ci metto un * in mezzo
                     funzione = funzione.Insert(i + 1, "*");
             }
             return funzione;
