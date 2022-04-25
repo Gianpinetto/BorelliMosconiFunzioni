@@ -119,7 +119,7 @@ namespace BorelliMosconiFunzioni
             char[] minimo = RangeMinimo.ToCharArray();
             char[] maximo = RangeMaximo.ToCharArray();
 
-            for (int i = 0; i < RangeMinimo.Length; i++)
+            for (int i = 0; i < RangeMinimo.Length; i++) 
             {
                 if ((int)minimo[i] != 45 && (int)minimo[i] != 43 && ((int)minimo[i] < 48 || (int)minimo[i] > 57)) //45 - 43 + 48 0 57 9
                     return false;
@@ -130,7 +130,7 @@ namespace BorelliMosconiFunzioni
                     return false;
             }
 
-            if ((RangeMinimo.Length == 0 || RangeMaximo.Length == 0) || (int.Parse(RangeMinimo) >= int.Parse(RangeMaximo)))
+            if ((RangeMinimo.Length == 0 || RangeMaximo.Length == 0) || (int.Parse(RangeMinimo) >= int.Parse(RangeMaximo))|| float.Parse(RangeMinimo) < -15000|| float.Parse(RangeMaximo) > 15000)
                 return false;
             else
                 return true;

@@ -53,8 +53,28 @@ namespace BorelliMosconiFunzioni
             InitializeComponent();
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.T)) //dove metti funzione
+            {
+                textBox2.Focus();
+            }
+            else if (keyData == (Keys.I)) //impostazioni
+            {
+                button3.PerformClick();
+            }
+            else if (keyData == (Keys.Enter)) //calc
+            {
+                button1.PerformClick();
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.KeyPreview = true;
+
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
