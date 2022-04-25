@@ -93,15 +93,15 @@ namespace BorelliMosconiFunzioni
                 pv.Model.Axes.Add(xAxis);//mio
                 pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
 
-                x.Points.Add(new DataPoint(0, ymin));
+                x.Points.Add(new DataPoint(0, ymin-1));
                 x.Points.Add(new DataPoint(0, 0));
-                x.Points.Add(new DataPoint(0, ymax));
+                x.Points.Add(new DataPoint(0, ymax+1));
                 x.Color = OxyColor.FromArgb(255, 0, 0, 0);
                 pv.Model.Series.Add(x);
 
                 y.Points.Add(new DataPoint(xmin, 0));
                 y.Points.Add(new DataPoint(0, 0));
-                y.Points.Add(new DataPoint(xmax, 0));
+                y.Points.Add(new DataPoint(xmax+1, 0));
                 y.Color = OxyColor.FromArgb(255, 0, 0, 0);
                 pv.Model.Series.Add(y);
 
@@ -130,8 +130,8 @@ namespace BorelliMosconiFunzioni
 
                 pv.Model.Axes[0].AbsoluteMinimum = xmin;
                 pv.Model.Axes[0].AbsoluteMaximum = xmax;
-                pv.Model.Axes[1].AbsoluteMinimum = ymin;
-                pv.Model.Axes[1].AbsoluteMaximum = ymax;
+                pv.Model.Axes[1].AbsoluteMinimum = ymin-1;
+                pv.Model.Axes[1].AbsoluteMaximum = ymax+1;
 
             }
         }
@@ -169,7 +169,7 @@ namespace BorelliMosconiFunzioni
             else
             {
                 funzione = AggiungiSegno(funzione); //aggiunge segno tra xx e x+num
-                funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore
+                funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore e all'esponente
                 funzione = AggiungiUno(funzione);
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax);
                 Form1_Load(sender, e);
@@ -323,6 +323,7 @@ namespace BorelliMosconiFunzioni
             var value = expr.Eval(); //calcolo il valore della nuova espressione
             y = Convert.ToDouble(value); //converto in double
 
+
             if (IndiceTrasformazione == 2 || IndiceTrasformazione == 3) //per terminare casi specifici di prima
                 y = -y;
             else if (IndiceTrasformazione == 5 || IndiceTrasformazione == 6)
@@ -414,37 +415,25 @@ namespace BorelliMosconiFunzioni
             string funzioneRidotta = funzione;
             //sin, cos, tan, sqrt, abs, cbrt,ln,e, 
 
-            funzioneRidotta = funzioneRidotta.Replace("ABS", ""); //siamo esauriti, abbiamo cercato sta roba per due ore quindi anche se è poco ottimizzata ranges
-            funzioneRidotta = funzioneRidotta.Replace("SIN", "");
-            funzioneRidotta = funzioneRidotta.Replace("COS", "");
-            funzioneRidotta = funzioneRidotta.Replace("TAN", "");
-            funzioneRidotta = funzioneRidotta.Replace("SQRT", "");
-            funzioneRidotta = funzioneRidotta.Replace("LN", "");
-            funzioneRidotta = funzioneRidotta.Replace("E", "");
-            funzioneRidotta = funzioneRidotta.Replace("+", "");
-            funzioneRidotta = funzioneRidotta.Replace("-", "");
-            funzioneRidotta = funzioneRidotta.Replace("*", "");
-            funzioneRidotta = funzioneRidotta.Replace("/", "");
-            funzioneRidotta = funzioneRidotta.Replace("^", "");
-            funzioneRidotta = funzioneRidotta.Replace("(", "");
-            funzioneRidotta = funzioneRidotta.Replace(")", "");
-            funzioneRidotta = funzioneRidotta.Replace("0", "");
-            funzioneRidotta = funzioneRidotta.Replace("1", "");
-            funzioneRidotta = funzioneRidotta.Replace("2", "");
-            funzioneRidotta = funzioneRidotta.Replace("3", "");
-            funzioneRidotta = funzioneRidotta.Replace("4", "");
-            funzioneRidotta = funzioneRidotta.Replace("5", "");
-            funzioneRidotta = funzioneRidotta.Replace("6", "");
-            funzioneRidotta = funzioneRidotta.Replace("7", "");
-            funzioneRidotta = funzioneRidotta.Replace("8", "");
-            funzioneRidotta = funzioneRidotta.Replace("9", "");
-            funzioneRidotta = funzioneRidotta.Replace(".", "");
+            string[] caratteri = new string[] { "ABS", "SIN", "COS", "TAN", "SQRT", "LN", "E", "+", "-", "*", "/", "^", "(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", " " };
 
-            char[] stringa = funzione.ToCharArray(); //converto in array di char
-            int sommaChar = 0, SommaCharRidotto = 0;
+            for (int i = 0; i < caratteri.Length; i++)
+            {
+                funzioneRidotta = funzioneRidotta.Replace(caratteri[i], "");
+                funzione = funzione.Replace(" ", "");
+            }
+
+            char[] stringa = funzione.ToCharArray();
+            double sommaChar = 0, SommaCharRidotto = 0;
             char[] stringaRidotta = funzioneRidotta.ToCharArray();
 
-            for (int i = 0; i < stringa.Length - 1; i++) //due segni vicini
+            for (int i = 0; i < stringa.Length; i++) //somma della stringa privata solo degli spazi
+                sommaChar += (double)stringa[i];
+
+            for (int i = 1; i < stringaRidotta.Length; i++) //somma stringa privata di tutto
+                SommaCharRidotto += (double)stringaRidotta[i];
+
+            for (int i = 0; i < stringa.Length - 1; i++)//segni vicini
             {
                 if (((int)stringa[i] == 42 || (int)stringa[i] == 43 || (int)stringa[i] == 45 || (int)stringa[i] == 47 || (int)stringa[i] == 94) &&
                     ((int)stringa[i + 1] == 42 || (int)stringa[i + 1] == 43 || (int)stringa[i + 1] == 45 || (int)stringa[i + 1] == 47 || (int)stringa[i + 1] == 94)) //42* 43+ 45- 47/ 94=^
@@ -453,13 +442,13 @@ namespace BorelliMosconiFunzioni
                 }
             }
 
-            for (int i = 0; i < stringa.Length; i++) //per calcolare la somma e successivamente la media
-                sommaChar += (int)stringa[i];
+            for (int i = 0; i < stringaRidotta.Length; i++) //se all'interno della stringa ridotta (senza spazi) ci sono altri caratteri oltre alla X
+            {
+                if (stringaRidotta[i] != 'X')
+                    return false;
+            }
 
-            for (int i = 1; i < stringaRidotta.Length; i++)
-                SommaCharRidotto += (int)stringaRidotta[i];
-
-            if ((sommaChar / stringa.Length) == 32 || (SommaCharRidotto / (stringaRidotta.Length-1)) != 88) //32= spazio 88=X
+            if (sommaChar == 0) //se sono solo spazi
                 return false;
             else
                 return true;
