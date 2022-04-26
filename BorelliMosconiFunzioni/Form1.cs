@@ -163,10 +163,14 @@ namespace BorelliMosconiFunzioni
                 pv.Model.Axes[1].AbsoluteMinimum = ymin - 1;
                 pv.Model.Axes[1].AbsoluteMaximum = ymax + 1;
 
-                label1.Text = (CondizioniEsistenza(coordinate, condizioni));
+                label1.Text = "";
+                label2.Text = "";
+
+                if (Impostasiu.ForzaPalermo == 0)
+                    label1.Text = (CondizioniEsistenza(coordinate, condizioni));
+                else
+                    label1.Text = $"RANGE: {PuntoInizio+1} ≤ x ≤ {xmax-1}";
                 label2.Text = (PariDispari(coordinate,funzione));
-
-
             }
         }
 
@@ -511,11 +515,10 @@ namespace BorelliMosconiFunzioni
         }
         public static string CondizioniEsistenza(double[,,] coordinate, bool[,] condizioni)
         {
-            int[] PrimoControllo = new int[condizioni.Length];
+            int[] PrimoControllo = new int[condizioni.GetLength(1)];
             int CondizioneRapida = 0;
             for (int i = 0; i < PrimoControllo.Length; i++)
             {
-                //MessageBox.Show($"{CondizioniEsistenza[i]}");
                 PrimoControllo[i] = 0;
                 if (condizioni[0, i] == true)
                 {
@@ -526,10 +529,10 @@ namespace BorelliMosconiFunzioni
             }
 
             if (CondizioneRapida == 0)
-                return "DOMINIO: 	∀X€R ";
+                return "DOMINIO: R ";
 
             if (CondizioneRapida == condizioni.Length / 2) //dal momento che fa metà negativi e metà positivi se è uguale alla metà è per forza maggiore o uguale a 0
-                return "DOMINIO: 	x>=0";
+                return "DOMINIO: x ≥0";
 
             if (CondizioneRapida == 1)
             {
@@ -538,7 +541,7 @@ namespace BorelliMosconiFunzioni
                 {
                     indice++;
                 }
-                return $"DOMINIO:: 	∀X€R-[{coordinate[0, 0, indice]}]";
+                return $"DOMINIO: R-[{coordinate[0, 0, indice]}]";
             }
 
             if (CondizioneRapida == 2)
@@ -553,7 +556,7 @@ namespace BorelliMosconiFunzioni
                         hello++;
                     }
                 }
-                return $"DOMINIO:: 	∀X€R-[{coordinate[0, 0, indice[0]]}, {coordinate[0, 0, indice[1]]}]";
+                return $"DOMINIO: R-[{coordinate[0, 0, indice[0]]}, {coordinate[0, 0, indice[1]]}]";
             }
 
             double[] valori = new double[] { -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000 };
@@ -617,6 +620,7 @@ namespace BorelliMosconiFunzioni
             Expression expr = new Expression();
             string backup = funzione;
             int percentuale=0;
+            double numero = 0;
             for (int j=0;j< risultati.GetLength(1); j++)
             {
                 for (int z=0; z<funzioni.Length; z++)
@@ -624,13 +628,17 @@ namespace BorelliMosconiFunzioni
                     funzione = backup;
                     for (int i = 0; i < funzione.Length; i++)
                     {
+                        numero = (coordinate[0, 0, coordinate.GetLength(2) - 1] * percentuale / 100);
+                        if (numero == 0)
+                            numero++;
+
                         if (funzione.Substring(i, 1).ToUpper() == "X")
                         {
                             funzione = funzione.Remove(i, 1); //tolgo la x
                             if (z == 0||z==2)
-                                funzioni[z] = funzione.Insert(i, $"*{coordinate[0,0, coordinate.GetLength(2)-1] * percentuale / 100}");
+                                funzioni[z] = funzione.Insert(i, $"*{numero}");
                             else if (z==1)
-                                funzioni[z] = funzione.Insert(i, $"*(- {coordinate[0,0, coordinate.GetLength(2)-1] * percentuale / 100})");
+                                funzioni[z] = funzione.Insert(i, $"*(- {numero})");
                         }
                     }
                     expr = new Expression(funzioni[z]);
