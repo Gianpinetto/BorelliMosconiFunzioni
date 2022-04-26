@@ -74,6 +74,8 @@ namespace BorelliMosconiFunzioni
         private void Form1_Load(object sender, EventArgs e)
         {
             this.KeyPreview = true;
+            label1.Text = "";
+            label2.Text = "";
 
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
@@ -160,6 +162,9 @@ namespace BorelliMosconiFunzioni
                 }
                 pv.Model.Axes[1].AbsoluteMinimum = ymin - 1;
                 pv.Model.Axes[1].AbsoluteMaximum = ymax + 1;
+
+                label1.Text = (CondizioniEsistenza(coordinate, condizioni));
+                label2.Text = (PariDispari(coordinate,funzione));
 
 
             }
@@ -386,6 +391,7 @@ namespace BorelliMosconiFunzioni
             double x = PuntoInizio; //in questo modo con questa formula trovo sempre metà tra positivo e negativo
             double xCiao = x;
             string backup = funzione;
+            int boh = 0;
 
             while (contatore < range) //condizoni di esistenza 
             {
@@ -397,6 +403,8 @@ namespace BorelliMosconiFunzioni
                 catch
                 {
                     condizioni[indice, contatore] = true; //se fallisco rendo condizione true (applico "eccezione")
+                    coordinate[indice, 0, contatore] = x - aumentoX;
+                    boh++;
                 }
                 contatore++;
             }
@@ -405,6 +413,8 @@ namespace BorelliMosconiFunzioni
 
         public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo, ref double xmin, ref double xmax, double PuntoInizio)
         {
+            //BUONGIORNO PROFE, SE STA LEGGENDO QUESTA PARTE DI CODICE LA INVIATIAMO CALOROSAMENTE A SALUTARCI, ALLA PROSSIMA LEZIONE, CON L'ESPRESSIONE "ORNITORINCO". GRAZIE E BUONA CORREZIONE ♥
+
             if (premuto[indice] == 0) //se è la prima volta calcolo 
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, indice, ref controllo, ref xmin, ref xmax, PuntoInizio);
             else if (premuto[indice] % 2 == 1) //se il num è dispari vuol dire che sto disattivando il bottone quindi rendo linea invisibile
@@ -499,6 +509,153 @@ namespace BorelliMosconiFunzioni
             }
             return funzione;
         }
+        public static string CondizioniEsistenza(double[,,] coordinate, bool[,] condizioni)
+        {
+            int[] PrimoControllo = new int[condizioni.Length];
+            int CondizioneRapida = 0;
+            for (int i = 0; i < PrimoControllo.Length; i++)
+            {
+                //MessageBox.Show($"{CondizioniEsistenza[i]}");
+                PrimoControllo[i] = 0;
+                if (condizioni[0, i] == true)
+                {
+                    PrimoControllo[i] = 1;
+                    CondizioneRapida++;
+                }
 
+            }
+
+            if (CondizioneRapida == 0)
+                return "DOMINIO: 	∀X€R ";
+
+            if (CondizioneRapida == condizioni.Length / 2) //dal momento che fa metà negativi e metà positivi se è uguale alla metà è per forza maggiore o uguale a 0
+                return "DOMINIO: 	x>=0";
+
+            if (CondizioneRapida == 1)
+            {
+                int indice = 0;
+                while (PrimoControllo[indice] == 0)
+                {
+                    indice++;
+                }
+                return $"DOMINIO:: 	∀X€R-[{coordinate[0, 0, indice]}]";
+            }
+
+            if (CondizioneRapida == 2)
+            {
+                int[] indice = new int[2];
+                int hello = 0;
+                for (int i = 0; i < PrimoControllo.Length; i++)
+                {
+                    if (condizioni[0, i] == true)
+                    {
+                        indice[hello] = i;
+                        hello++;
+                    }
+                }
+                return $"DOMINIO:: 	∀X€R-[{coordinate[0, 0, indice[0]]}, {coordinate[0, 0, indice[1]]}]";
+            }
+
+            double[] valori = new double[] { -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000 };
+            int helo = 0, GiaDentro = 0;
+            string pezzifunzione = "";
+            for (int i = 0; i < PrimoControllo.Length; i++)
+            {
+                if (condizioni[0, i] == true && GiaDentro == 0)
+                {
+                    valori[helo] = Math.Round(coordinate[0, 0, i]);
+                    helo++;
+                    GiaDentro++;
+                }
+                else if (condizioni[0, i] == false && GiaDentro == 1)
+                {
+                    GiaDentro = 0;
+                    valori[helo] = Math.Round(coordinate[0, 0, i]);
+                    helo++;
+                }
+
+            }
+            int minore = 0, entrato = 0;
+            for (int i = 0; i < valori.Length - 1; i++)
+            {
+                if (valori[i] == -25000 && valori[i + 1] == -25000)
+                    i = valori.Length;
+                else
+                {
+                    if (valori[i] == valori[i + 1])
+                    {
+                        pezzifunzione += $" x≠{valori[i]}";
+                        entrato = 1;
+                    }
+                    else if (minore == 0)
+                    {
+                        if (valori[i] != coordinate[0, 0, 0])
+                            pezzifunzione += $" x<{valori[i]}";
+                        minore++;
+                    }
+                    else if (minore == 1)
+                    {
+                        pezzifunzione += $" x>{valori[i]}";
+                        minore = 0;
+                    }
+                }
+                if (entrato == 1)
+                    i++;
+                entrato = 0;
+
+            }
+            //return $"{valori[0]} {valori[1]} {valori[2]} {valori[3]} {valori[4]} {valori[5]} {valori[6]} {valori[7]} {valori[8]} {valori[9]}";
+            return pezzifunzione;
+        }
+
+        public static string PariDispari(double[,,] coordinate, string funzione)
+        {
+
+            //[0] risultato normale | [1] f(-x) | [2] -f(x)
+            string[] funzioni = new string[3];
+            double[,] risultati = new double[3,20];
+            Expression expr = new Expression();
+            string backup = funzione;
+            int percentuale=0;
+            for (int j=0;j< risultati.GetLength(1); j++)
+            {
+                for (int z=0; z<funzioni.Length; z++)
+                {
+                    funzione = backup;
+                    for (int i = 0; i < funzione.Length; i++)
+                    {
+                        if (funzione.Substring(i, 1).ToUpper() == "X")
+                        {
+                            funzione = funzione.Remove(i, 1); //tolgo la x
+                            if (z == 0||z==2)
+                                funzioni[z] = funzione.Insert(i, $"*{coordinate[0,0, coordinate.GetLength(2)-1] * percentuale / 100}");
+                            else if (z==1)
+                                funzioni[z] = funzione.Insert(i, $"*(- {coordinate[0,0, coordinate.GetLength(2)-1] * percentuale / 100})");
+                        }
+                    }
+                    expr = new Expression(funzioni[z]);
+                    var value = expr.Eval(); //calcolo il valore della nuova espressione
+                    risultati[z, j] = Convert.ToDouble(value); //converto in double
+                }
+
+                percentuale+=5;
+            }
+
+            int Pari=0, Dispari=0;
+            for (int i=0; i<20; i++)
+            {
+                if (risultati[0,i] == risultati[1,i])
+                    Pari++;
+                if (risultati[1,i]==risultati[2,i]*(-1))
+                    Dispari++;
+            }
+
+            if (Pari==20)
+                return "È PARI";
+            if (Dispari==20)
+                return "È DISPARI";
+
+            return "NÉ PARI NÉ DISPARI";
+        }
     }
 }
