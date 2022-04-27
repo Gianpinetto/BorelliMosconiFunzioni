@@ -27,7 +27,7 @@ namespace BorelliMosconiFunzioni
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
         int controllo = 0;
         int range = 25000;
-        double aumentoX = 0.25, ymin = 0, ymax = 0, xmin = 0, xmax = 0, PuntoInizio = 0;
+        double aumentoX = 0.20, ymin = 0, ymax = 0, xmin = 0, xmax = 0, PuntoInizio = 0;
         double[,,] coordinate = new double[7, 2, 25000];
         bool[,] condizioni = new bool[7, 25000];
 
@@ -170,7 +170,7 @@ namespace BorelliMosconiFunzioni
                     label1.Text = (CondizioniEsistenza(coordinate, condizioni));
                 else
                     label1.Text = $"RANGE: {PuntoInizio+1} ≤ x ≤ {xmax-1}";
-                label2.Text = (PariDispari(coordinate,funzione));
+                label2.Text = (PariDispari(coordinate,funzione,condizioni));
             }
         }
 
@@ -541,7 +541,7 @@ namespace BorelliMosconiFunzioni
                 {
                     indice++;
                 }
-                return $"DOMINIO: R-[{coordinate[0, 0, indice]}]";
+                return $"DOMINIO: R-[{Math.Round(coordinate[0, 0, indice],0)}]";
             }
 
             if (CondizioneRapida == 2)
@@ -556,7 +556,7 @@ namespace BorelliMosconiFunzioni
                         hello++;
                     }
                 }
-                return $"DOMINIO: R-[{coordinate[0, 0, indice[0]]}, {coordinate[0, 0, indice[1]]}]";
+                return $"DOMINIO: R-[{Math.Round(coordinate[0, 0, indice[0]]),0}, {Math.Round(coordinate[0, 0, indice[1]],0)}]";
             }
 
             double[] valori = new double[] { -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000 };
@@ -566,14 +566,14 @@ namespace BorelliMosconiFunzioni
             {
                 if (condizioni[0, i] == true && GiaDentro == 0)
                 {
-                    valori[helo] = Math.Round(coordinate[0, 0, i]);
+                    valori[helo] = Math.Round(coordinate[0, 0, i],0);
                     helo++;
                     GiaDentro++;
                 }
                 else if (condizioni[0, i] == false && GiaDentro == 1)
                 {
                     GiaDentro = 0;
-                    valori[helo] = Math.Round(coordinate[0, 0, i]);
+                    valori[helo] = Math.Round(coordinate[0, 0, i],0);
                     helo++;
                 }
 
@@ -587,18 +587,18 @@ namespace BorelliMosconiFunzioni
                 {
                     if (valori[i] == valori[i + 1])
                     {
-                        pezzifunzione += $" x≠{valori[i]}";
+                        pezzifunzione += $" x≠{Math.Round(valori[i],0)}";
                         entrato = 1;
                     }
                     else if (minore == 0)
                     {
                         if (valori[i] != coordinate[0, 0, 0])
-                            pezzifunzione += $" x<{valori[i]}";
+                            pezzifunzione += $" x<{Math.Round(valori[i],0)}";
                         minore++;
                     }
                     else if (minore == 1)
                     {
-                        pezzifunzione += $" x>{valori[i]}";
+                        pezzifunzione += $" x>{Math.Round(valori[i],0)}";
                         minore = 0;
                     }
                 }
@@ -611,7 +611,7 @@ namespace BorelliMosconiFunzioni
             return pezzifunzione;
         }
 
-        public static string PariDispari(double[,,] coordinate, string funzione)
+        public static string PariDispari(double[,,] coordinate, string funzione, bool [,]condizioni)
         {
 
             //[0] risultato normale | [1] f(-x) | [2] -f(x)
@@ -628,18 +628,23 @@ namespace BorelliMosconiFunzioni
                     funzione = backup;
                     for (int i = 0; i < funzione.Length; i++)
                     {
-                        numero = (coordinate[0, 0, coordinate.GetLength(2) - 1] * percentuale / 100);
-                        if (numero == 0)
-                            numero++;
-
-                        if (funzione.Substring(i, 1).ToUpper() == "X")
+                        if (condizioni[0, (coordinate.GetLength(2) - 1) * (percentuale / 100)] == false)
                         {
-                            funzione = funzione.Remove(i, 1); //tolgo la x
-                            if (z == 0||z==2)
-                                funzioni[z] = funzione.Insert(i, $"*{numero}");
-                            else if (z==1)
-                                funzioni[z] = funzione.Insert(i, $"*(- {numero})");
+                            numero = (coordinate[0, 0, (coordinate.GetLength(2) - 1) * (percentuale / 100)]);
+
+                            if (funzione.Substring(i, 1).ToUpper() == "X")
+                            {
+                                funzione = funzione.Remove(i, 1); //tolgo la x
+                                if (z == 0 || z == 2)
+                                    funzioni[z] = funzione.Insert(i, $"*{numero}");
+                                else if (z == 1)
+                                    funzioni[z] = funzione.Insert(i, $"*(- {numero})");
+                            }
                         }
+                        else
+                            funzioni[z] = "0";
+
+                        
                     }
                     expr = new Expression(funzioni[z]);
                     var value = expr.Eval(); //calcolo il valore della nuova espressione

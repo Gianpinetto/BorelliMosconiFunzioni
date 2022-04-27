@@ -22,6 +22,10 @@ namespace BorelliMosconiFunzioni
         float precisione = 0;
         int range = 0;
         int volte = 0;
+        private void Control_MouseWheel(object sender, MouseEventArgs e)
+        {
+            ((HandledMouseEventArgs)e).Handled = true;
+        }
 
         public Form2()
         {
@@ -30,8 +34,10 @@ namespace BorelliMosconiFunzioni
             textBox1.Enabled = false;
             textBox2.Enabled = false;
 
-            precisione2 = 0.25;
-            trackBar1.Value = Convert.ToInt32((precisione2 * 100) + 1);
+            //trackBar1.Enabled = false;
+
+            precisione2 = 0.20;
+            trackBar1.Value = Convert.ToInt32((precisione2 * 100)-1);
             label2.Text = $"{precisione2}";
 
             range2 = 25000;
@@ -45,16 +51,24 @@ namespace BorelliMosconiFunzioni
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            label2.Text = Convert.ToString(precisione2);
+
             precisione = trackBar1.Value;
-            precisione2 = ((precisione + 1) / 100);
+            if (precisione % 10 != 0)
+                Math.Round(precisione);
+            precisione2 = ((precisione ) / 100);
+            trackBar1.SmallChange = 10;
+            trackBar1.LargeChange = 10;
+            label2.Text = Convert.ToString(precisione2);
+            //trackBar1.MouseWheel += Control_MouseWheel;
+
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
-            label4.Text = $"{range2}";
+
             range = trackBar2.Value;
-            range2 = (range * 1000) + 1000;
+            range2 = (range * 1000);
+            label4.Text = $"{range2}";
         }
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
