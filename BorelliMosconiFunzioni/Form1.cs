@@ -31,7 +31,9 @@ namespace BorelliMosconiFunzioni
         double[,,] coordinate = new double[7, 2, 25000];
         bool[,] condizioni = new bool[7, 25000];
 
-        string funzione = " ";
+        string funzione = " ", PariDispariIi = "";
+
+        int VecchiaLunghezzaCasellaTesto = 0, NuovaLunghezzaCasellaTesto = 0;
 
         PlotView pv = new PlotView();
 
@@ -171,7 +173,7 @@ namespace BorelliMosconiFunzioni
                 else
                     label1.Text = $"RANGE: {PuntoInizio + 1} ≤ x ≤ {xmax - 1}";
 
-                label2.Text = (PariDispari(coordinate, funzione, condizioni));
+                //label2.Text = PariDispari(coordinate, funzione, condizioni);
             }
         }
 
@@ -396,7 +398,6 @@ namespace BorelliMosconiFunzioni
             double x = PuntoInizio; //in questo modo con questa formula trovo sempre metà tra positivo e negativo
             double xCiao = x;
             string backup = funzione;
-            int boh = 0;
 
             while (contatore < range) //condizoni di esistenza 
             {
@@ -409,11 +410,23 @@ namespace BorelliMosconiFunzioni
                 {
                     condizioni[indice, contatore] = true; //se fallisco rendo condizione true (applico "eccezione")
                     coordinate[indice, 0, contatore] = x - aumentoX;
-                    boh++;
                 }
                 contatore++;
             }
             controllo++;
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            NuovaLunghezzaCasellaTesto = textBox2.Text.Length;
+            if (NuovaLunghezzaCasellaTesto - 1 >= 0 && NuovaLunghezzaCasellaTesto > VecchiaLunghezzaCasellaTesto && textBox2.Text.Substring(NuovaLunghezzaCasellaTesto - 1, 1) == "(")
+            {
+                textBox2.Text += ")";
+                textBox2.Select(NuovaLunghezzaCasellaTesto - 1, 0);
+            }
+            VecchiaLunghezzaCasellaTesto = NuovaLunghezzaCasellaTesto;
+
+
         }
 
         public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo, ref double xmin, ref double xmax, double PuntoInizio)
@@ -595,7 +608,7 @@ namespace BorelliMosconiFunzioni
                     { //valori[i] != coordinate[0, 0, 0] perchè sennò in alcuni casi mi dice che deve essre maggiore del limite
                         if (valori[i] != coordinate[0, 0, 0] && Math.Round(valori[i], 0) == valori[i]) //se l'arrotondato è uguale al non arrotondato vuol dire che è solo minore sennò è minore o uguale
                             pezzifunzione += $" x≤{Math.Round(valori[i], 0)}";
-                        else if(valori[i] != coordinate[0, 0, 0])
+                        else if (valori[i] != coordinate[0, 0, 0])
                             pezzifunzione += $" x<{Math.Round(valori[i], 0)}";
                         minore++;
                     }
@@ -617,7 +630,7 @@ namespace BorelliMosconiFunzioni
             return pezzifunzione;
         }
 
-        public static string PariDispari(double[,,] coordinate, string funzione, bool[,] condizioni)
+        public static string PariDispari(double[,,] coordinate, string funzione, bool[,] condizionii)
         {
 
             //[0] risultato normale | [1] f(-x) | [2] -f(x)
@@ -629,16 +642,16 @@ namespace BorelliMosconiFunzioni
             double numero = 0;
             double minimo = 0;
             //MessageBox.Show($"{condizioni.GetLength(1)}");
-            for (int i = 5000; i < condizioni.GetLength(1); i++)
+            for (int i = 5000; i < condizionii.GetLength(1); i++)
             {
-                if (condizioni[0, i] == false)
+                if (condizionii[0, i] == false)
                 {
-                    MessageBox.Show($"CONDIZIONE:{condizioni[0, i]}\nNUMERO:{coordinate[0, 0, i]}");
+                    MessageBox.Show($"CONDIZIONE:{condizionii[0, i]}\nNUMERO:{coordinate[0, 0, i]}");
                     minimo = coordinate[0, 0, i];
                     i = coordinate.GetLength(2);
                 }
             }
-            MessageBox.Show($"{minimo}");
+            MessageBox.Show($"{condizionii[0,0]}");
             for (int j = 0; j < risultati.GetLength(1); j++)
             {
                 for (int z = 0; z < funzioni.Length; z++)
@@ -646,7 +659,7 @@ namespace BorelliMosconiFunzioni
                     funzione = backup;
                     for (int i = 0; i < funzione.Length; i++)
                     {
-                        if (condizioni[0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))] == false)
+                        if (condizionii[0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))] == false)
                         {
                             //MessageBox.Show($"Lunghezza {Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))}\nNumero {Math.Round(coordinate[0, 0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))]),2} \nPercentuale {percentuale} \nValore {condizioni[0, (int)((coordinate.GetLength(2) - 1) * (percentuale / 100))]}");
                             numero = Math.Round((coordinate[0, 0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))]),2);

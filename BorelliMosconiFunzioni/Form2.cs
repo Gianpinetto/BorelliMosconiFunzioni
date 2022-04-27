@@ -23,7 +23,7 @@ namespace BorelliMosconiFunzioni
         int range = 0;
         int volte = 0;
 
-        double[] ValoriPrecisioni = new double[] { 0.01, 0.02, 0.05, 0.10, 0.20, 0.25, 0.50, 1.0 };
+        double[] ValoriPrecisioni = new double[] { 0.010, 0.020, 0.050, 0.10, 0.20, 0.25, 0.50, 1.0 };
         public Form2()
         {
             InitializeComponent();

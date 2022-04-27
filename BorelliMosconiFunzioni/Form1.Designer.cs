@@ -61,6 +61,7 @@ namespace BorelliMosconiFunzioni
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(222, 51);
             this.textBox2.TabIndex = 5;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // checkBox1
             // 
@@ -185,7 +186,7 @@ namespace BorelliMosconiFunzioni
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "GRAPH V-0.4.6";
+            this.Text = "GRAPH V-0.4.7";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
