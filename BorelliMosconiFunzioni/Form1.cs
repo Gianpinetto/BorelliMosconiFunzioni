@@ -26,8 +26,8 @@ namespace BorelliMosconiFunzioni
 
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
         int controllo = 0;
-        int range = 25000;
-        double aumentoX = 0.20, ymin = 0, ymax = 0, xmin = 0, xmax = 0, PuntoInizio = 0;
+        int range = 10000;
+        double aumentoX = 0.01, ymin = 0, ymax = 0, xmin = 0, xmax = 0, PuntoInizio = 0;
         double[,,] coordinate = new double[7, 2, 25000];
         bool[,] condizioni = new bool[7, 25000];
 
@@ -169,8 +169,9 @@ namespace BorelliMosconiFunzioni
                 if (Impostasiu.ForzaPalermo == 0)
                     label1.Text = (CondizioniEsistenza(coordinate, condizioni));
                 else
-                    label1.Text = $"RANGE: {PuntoInizio+1} ≤ x ≤ {xmax-1}";
-                label2.Text = (PariDispari(coordinate,funzione,condizioni));
+                    label1.Text = $"RANGE: {PuntoInizio + 1} ≤ x ≤ {xmax - 1}";
+
+                label2.Text = (PariDispari(coordinate, funzione, condizioni));
             }
         }
 
@@ -199,7 +200,7 @@ namespace BorelliMosconiFunzioni
                 range = 1000;
 
             PuntoInizio = Impostasiu.PuntoInizio;
-
+            //MessageBox.Show($"RANGE:{range} \nPRECISIONE:{aumentoX}");
             coordinate = new double[7, 2, range];
             condizioni = new bool[7, range];
 
@@ -541,7 +542,7 @@ namespace BorelliMosconiFunzioni
                 {
                     indice++;
                 }
-                return $"DOMINIO: R-[{Math.Round(coordinate[0, 0, indice],0)}]";
+                return $"DOMINIO: R-[{Math.Round(coordinate[0, 0, indice], 0)}]";
             }
 
             if (CondizioneRapida == 2)
@@ -556,7 +557,7 @@ namespace BorelliMosconiFunzioni
                         hello++;
                     }
                 }
-                return $"DOMINIO: R-[{Math.Round(coordinate[0, 0, indice[0]]),0}, {Math.Round(coordinate[0, 0, indice[1]],0)}]";
+                return $"DOMINIO: R-[{Math.Round(coordinate[0, 0, indice[0]]),0}, {Math.Round(coordinate[0, 0, indice[1]], 0)}]";
             }
 
             double[] valori = new double[] { -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000 };
@@ -566,14 +567,14 @@ namespace BorelliMosconiFunzioni
             {
                 if (condizioni[0, i] == true && GiaDentro == 0)
                 {
-                    valori[helo] = Math.Round(coordinate[0, 0, i],0);
+                    valori[helo] = Math.Round(coordinate[0, 0, i], 0);
                     helo++;
                     GiaDentro++;
                 }
                 else if (condizioni[0, i] == false && GiaDentro == 1)
                 {
                     GiaDentro = 0;
-                    valori[helo] = Math.Round(coordinate[0, 0, i],0);
+                    valori[helo] = Math.Round(coordinate[0, 0, i], 0);
                     helo++;
                 }
 
@@ -587,18 +588,23 @@ namespace BorelliMosconiFunzioni
                 {
                     if (valori[i] == valori[i + 1])
                     {
-                        pezzifunzione += $" x≠{Math.Round(valori[i],0)}";
+                        pezzifunzione += $" x≠{Math.Round(valori[i], 0)}";
                         entrato = 1;
                     }
                     else if (minore == 0)
-                    {
-                        if (valori[i] != coordinate[0, 0, 0])
-                            pezzifunzione += $" x<{Math.Round(valori[i],0)}";
+                    { //valori[i] != coordinate[0, 0, 0] perchè sennò in alcuni casi mi dice che deve essre maggiore del limite
+                        if (valori[i] != coordinate[0, 0, 0] && Math.Round(valori[i], 0) == valori[i]) //se l'arrotondato è uguale al non arrotondato vuol dire che è solo minore sennò è minore o uguale
+                            pezzifunzione += $" x≤{Math.Round(valori[i], 0)}";
+                        else if(valori[i] != coordinate[0, 0, 0])
+                            pezzifunzione += $" x<{Math.Round(valori[i], 0)}";
                         minore++;
                     }
                     else if (minore == 1)
                     {
-                        pezzifunzione += $" x>{Math.Round(valori[i],0)}";
+                        if (Math.Round(valori[i], 0) == valori[i])
+                            pezzifunzione += $" x≥{Math.Round(valori[i], 0)}";
+                        else
+                            pezzifunzione += $" ≥x{Math.Round(valori[i], 0)}";
                         minore = 0;
                     }
                 }
@@ -611,62 +617,76 @@ namespace BorelliMosconiFunzioni
             return pezzifunzione;
         }
 
-        public static string PariDispari(double[,,] coordinate, string funzione, bool [,]condizioni)
+        public static string PariDispari(double[,,] coordinate, string funzione, bool[,] condizioni)
         {
 
             //[0] risultato normale | [1] f(-x) | [2] -f(x)
-            string[] funzioni = new string[3];
-            double[,] risultati = new double[3,20];
+            /*string[] funzioni = new string[3];
+            double[,] risultati = new double[3, 20];
             Expression expr = new Expression();
             string backup = funzione;
-            int percentuale=0;
+            double percentuale = 0;
             double numero = 0;
-            for (int j=0;j< risultati.GetLength(1); j++)
+            double minimo = 0;
+            //MessageBox.Show($"{condizioni.GetLength(1)}");
+            for (int i = 5000; i < condizioni.GetLength(1); i++)
             {
-                for (int z=0; z<funzioni.Length; z++)
+                if (condizioni[0, i] == false)
+                {
+                    MessageBox.Show($"CONDIZIONE:{condizioni[0, i]}\nNUMERO:{coordinate[0, 0, i]}");
+                    minimo = coordinate[0, 0, i];
+                    i = coordinate.GetLength(2);
+                }
+            }
+            MessageBox.Show($"{minimo}");
+            for (int j = 0; j < risultati.GetLength(1); j++)
+            {
+                for (int z = 0; z < funzioni.Length; z++)
                 {
                     funzione = backup;
                     for (int i = 0; i < funzione.Length; i++)
                     {
-                        if (condizioni[0, (coordinate.GetLength(2) - 1) * (percentuale / 100)] == false)
+                        if (condizioni[0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))] == false)
                         {
-                            numero = (coordinate[0, 0, (coordinate.GetLength(2) - 1) * (percentuale / 100)]);
+                            //MessageBox.Show($"Lunghezza {Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))}\nNumero {Math.Round(coordinate[0, 0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))]),2} \nPercentuale {percentuale} \nValore {condizioni[0, (int)((coordinate.GetLength(2) - 1) * (percentuale / 100))]}");
+                            numero = Math.Round((coordinate[0, 0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))]),2);
 
                             if (funzione.Substring(i, 1).ToUpper() == "X")
                             {
                                 funzione = funzione.Remove(i, 1); //tolgo la x
                                 if (z == 0 || z == 2)
-                                    funzioni[z] = funzione.Insert(i, $"*{numero}");
-                                else if (z == 1)
-                                    funzioni[z] = funzione.Insert(i, $"*(- {numero})");
+                                    funzioni[z] = funzione.Insert(i, $"*({numero})");
+                                else if (z == 1 && numero>minimo)
+                                    funzioni[z] = funzione.Insert(i, $"*(-({numero}))");
                             }
                         }
                         else
-                            funzioni[z] = "0";
-
-                        
+                            funzioni[z]="1";
                     }
+                    //MessageBox.Show(funzioni[z]);
                     expr = new Expression(funzioni[z]);
                     var value = expr.Eval(); //calcolo il valore della nuova espressione
                     risultati[z, j] = Convert.ToDouble(value); //converto in double
                 }
 
-                percentuale+=5;
+                percentuale += 5;
             }
 
-            int Pari=0, Dispari=0;
-            for (int i=0; i<20; i++)
+            int Pari = 0, Dispari = 0;
+            for (int i = 0; i < 20; i++)
             {
-                if (risultati[0,i] == risultati[1,i])
+                if (risultati[0, i] == risultati[1, i])
                     Pari++;
-                if (risultati[1,i]==risultati[2,i]*(-1))
+                if (risultati[1, i] == risultati[2, i] * (-1))
                     Dispari++;
             }
 
-            if (Pari==20)
+            //MessageBox.Show($"{Pari} DISPARI:{Dispari}");
+
+            if (Pari == 20)
                 return "È PARI";
-            if (Dispari==20)
-                return "È DISPARI";
+            if (Dispari == 20)
+                return "È DISPARI";*/
 
             return "NÉ PARI NÉ DISPARI";
         }

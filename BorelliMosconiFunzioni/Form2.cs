@@ -22,11 +22,8 @@ namespace BorelliMosconiFunzioni
         float precisione = 0;
         int range = 0;
         int volte = 0;
-        private void Control_MouseWheel(object sender, MouseEventArgs e)
-        {
-            ((HandledMouseEventArgs)e).Handled = true;
-        }
 
+        double[] ValoriPrecisioni = new double[] { 0.01, 0.02, 0.05, 0.10, 0.20, 0.25, 0.50, 1.0 };
         public Form2()
         {
             InitializeComponent();
@@ -36,11 +33,11 @@ namespace BorelliMosconiFunzioni
 
             //trackBar1.Enabled = false;
 
-            precisione2 = 0.20;
-            trackBar1.Value = Convert.ToInt32((precisione2 * 100)-1);
+            precisione2 = 0.01;
+            trackBar1.Value = 0; //è l'indice del vettore in cui c'è 0.01
             label2.Text = $"{precisione2}";
 
-            range2 = 25000;
+            range2 = 10000;
             trackBar2.Value = range2 / 1000;
             label4.Text = $"{range2}";
 
@@ -51,16 +48,9 @@ namespace BorelliMosconiFunzioni
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-
             precisione = trackBar1.Value;
-            if (precisione % 10 != 0)
-                Math.Round(precisione);
-            precisione2 = ((precisione ) / 100);
-            trackBar1.SmallChange = 10;
-            trackBar1.LargeChange = 10;
+            precisione2 = ValoriPrecisioni[Convert.ToInt32(precisione)];
             label2.Text = Convert.ToString(precisione2);
-            //trackBar1.MouseWheel += Control_MouseWheel;
-
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -79,8 +69,8 @@ namespace BorelliMosconiFunzioni
             if (checkBox1.Checked == true && condizione == true)
             {
                 ForzaPalermo = 1;
-                int RangeMinimo = int.Parse(textBox1.Text)-1;
-                int RangeMassimo = int.Parse(textBox2.Text)+1;
+                int RangeMinimo = int.Parse(textBox1.Text) - 1;
+                int RangeMassimo = int.Parse(textBox2.Text) + 1;
                 double rangePROVVISORIO = (RangeMassimo - RangeMinimo) / precisione2;
                 range2 = Convert.ToInt32(rangePROVVISORIO);
                 PuntoInizio = RangeMinimo;
@@ -98,14 +88,6 @@ namespace BorelliMosconiFunzioni
                     this.Hide();
                 }
             }
-
-
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -125,7 +107,7 @@ namespace BorelliMosconiFunzioni
             volte++;
         }
 
-        public static bool VerificaString(string RangeMinimo, string RangeMaximo)
+        public static bool VerificaString(string RangeMinimo, string RangeMaximo) 
         {
             RangeMinimo = RangeMinimo.Replace(" ", "");
             RangeMaximo = RangeMaximo.Replace(" ", "");
@@ -133,7 +115,7 @@ namespace BorelliMosconiFunzioni
             char[] minimo = RangeMinimo.ToCharArray();
             char[] maximo = RangeMaximo.ToCharArray();
 
-            for (int i = 0; i < RangeMinimo.Length; i++) 
+            for (int i = 0; i < RangeMinimo.Length; i++)
             {
                 if ((int)minimo[i] != 45 && (int)minimo[i] != 43 && ((int)minimo[i] < 48 || (int)minimo[i] > 57)) //45 - 43 + 48 0 57 9
                     return false;
@@ -144,7 +126,7 @@ namespace BorelliMosconiFunzioni
                     return false;
             }
 
-            if ((RangeMinimo.Length == 0 || RangeMaximo.Length == 0) || (int.Parse(RangeMinimo) >= int.Parse(RangeMaximo))|| float.Parse(RangeMinimo) < -15000|| float.Parse(RangeMaximo) > 15000)
+            if ((RangeMinimo.Length == 0 || RangeMaximo.Length == 0) || (int.Parse(RangeMinimo) >= int.Parse(RangeMaximo)) || float.Parse(RangeMinimo) < -15000 || float.Parse(RangeMaximo) > 15000)
                 return false;
             else
                 return true;
