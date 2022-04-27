@@ -66,10 +66,10 @@ namespace BorelliMosconiFunzioni
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox1.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox1.Location = new System.Drawing.Point(857, 88);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(190, 23);
+            this.checkBox1.Size = new System.Drawing.Size(162, 22);
             this.checkBox1.TabIndex = 8;
             this.checkBox1.Text = "f(-x)    [SIMM. y]";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -78,10 +78,10 @@ namespace BorelliMosconiFunzioni
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox2.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox2.Location = new System.Drawing.Point(857, 118);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(190, 23);
+            this.checkBox2.Size = new System.Drawing.Size(163, 22);
             this.checkBox2.TabIndex = 9;
             this.checkBox2.Text = "-f(x)    [SIMM. x]";
             this.checkBox2.UseVisualStyleBackColor = true;
@@ -90,10 +90,10 @@ namespace BorelliMosconiFunzioni
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox3.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox3.Location = new System.Drawing.Point(857, 148);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(217, 23);
+            this.checkBox3.Size = new System.Drawing.Size(192, 22);
             this.checkBox3.TabIndex = 10;
             this.checkBox3.Text = "-f(-x)   [SIMM. Orig]";
             this.checkBox3.UseVisualStyleBackColor = true;
@@ -102,10 +102,10 @@ namespace BorelliMosconiFunzioni
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox4.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox4.Location = new System.Drawing.Point(857, 193);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(190, 23);
+            this.checkBox4.Size = new System.Drawing.Size(163, 22);
             this.checkBox4.TabIndex = 11;
             this.checkBox4.Text = "f(|x|)   [SIMM. y]";
             this.checkBox4.UseVisualStyleBackColor = true;
@@ -114,10 +114,10 @@ namespace BorelliMosconiFunzioni
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox5.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox5.Location = new System.Drawing.Point(857, 223);
             this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(190, 23);
+            this.checkBox5.Size = new System.Drawing.Size(164, 22);
             this.checkBox5.TabIndex = 12;
             this.checkBox5.Text = "|f(x)|   [SIMM. x]";
             this.checkBox5.UseVisualStyleBackColor = true;
@@ -126,10 +126,10 @@ namespace BorelliMosconiFunzioni
             // checkBox6
             // 
             this.checkBox6.AutoSize = true;
-            this.checkBox6.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox6.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox6.Location = new System.Drawing.Point(857, 253);
             this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(190, 23);
+            this.checkBox6.Size = new System.Drawing.Size(167, 22);
             this.checkBox6.TabIndex = 13;
             this.checkBox6.Text = "|f(|x|)| [SIMM. y]";
             this.checkBox6.UseVisualStyleBackColor = true;
@@ -148,20 +148,20 @@ namespace BorelliMosconiFunzioni
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(859, 305);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 20);
+            this.label1.Size = new System.Drawing.Size(58, 18);
             this.label1.TabIndex = 16;
             this.label1.Text = "label1";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Georgia", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(859, 348);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(51, 20);
+            this.label2.Size = new System.Drawing.Size(59, 18);
             this.label2.TabIndex = 17;
             this.label2.Text = "label2";
             // 
@@ -186,7 +186,7 @@ namespace BorelliMosconiFunzioni
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "GRAPH V-0.4.7";
+            this.Text = "GRAPH V-0.4.8";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
