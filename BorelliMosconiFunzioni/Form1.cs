@@ -168,10 +168,7 @@ namespace BorelliMosconiFunzioni
                 label1.Text = "";
                 label2.Text = "";
 
-                if (Impostasiu.ForzaPalermo == 0)
-                    label1.Text = (CondizioniEsistenza(coordinate, condizioni));
-                else
-                    label1.Text = $"RANGE: {PuntoInizio + 1} ≤ x ≤ {xmax - 1}";
+                label1.Text = (CondizioniEsistenza(coordinate, condizioni));
 
                 //label2.Text = PariDispari(coordinate, funzione, condizioni);
             }
@@ -475,7 +472,18 @@ namespace BorelliMosconiFunzioni
         {
             funzione = funzione.ToUpper();
             string funzioneRidotta = funzione;
+            int tondeaperte = 0, tondechiuse = 0;
             //sin, cos, tan, sqrt, abs, cbrt,ln,e, 
+
+            for (int i = 0; i < funzioneRidotta.Length; i++)
+            {
+                if (funzioneRidotta.Substring(i, 1) == "(")
+                    tondeaperte++;
+                else if (funzioneRidotta.Substring(i, 1) == ")")
+                    tondechiuse++;
+            }
+            if (tondeaperte != tondechiuse)
+                return false;
 
             string[] caratteri = new string[] { "ABS", "SIN", "COS", "TAN", "SQRT", "LN", "E", "+", "-", "*", "/", "^", "(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", " " };
 
@@ -539,14 +547,10 @@ namespace BorelliMosconiFunzioni
                     PrimoControllo[i] = 1;
                     CondizioneRapida++;
                 }
-
             }
 
             if (CondizioneRapida == 0)
                 return "DOMINIO: R ";
-
-            if (CondizioneRapida == condizioni.Length / 2) //dal momento che fa metà negativi e metà positivi se è uguale alla metà è per forza maggiore o uguale a 0
-                return "DOMINIO: x ≥0";
 
             if (CondizioneRapida == 1)
             {
