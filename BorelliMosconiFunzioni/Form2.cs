@@ -55,7 +55,6 @@ namespace BorelliMosconiFunzioni
 
         private void trackBar2_Scroll(object sender, EventArgs e)
         {
-
             range = trackBar2.Value;
             range2 = (range * 1000);
             label4.Text = $"{range2}";
