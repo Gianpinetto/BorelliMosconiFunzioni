@@ -61,7 +61,7 @@ namespace BorelliMosconiFunzioni
             {
                 textBox2.Focus();
             }
-            else if (keyData == (Keys.Control|Keys.I)) //impostazioni
+            else if (keyData == (Keys.Control | Keys.I)) //impostazioni
             {
                 button3.PerformClick();
             }
@@ -485,13 +485,16 @@ namespace BorelliMosconiFunzioni
             if (tondeaperte != tondechiuse)
                 return false;
 
-            string[] caratteri = new string[] { "ABS", "SIN", "COS", "TAN", "SQRT", "LN", "E","PI" ,"+", "-", "*", "/", "^", "(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", " " };
+            string[] caratteri = new string[] { "ABS", "SIN", "COS", "TAN", "SQRT", "LN", "E", "PI", "+", "-", "*", "/", "^", "(", ")", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", " " };
 
             for (int i = 0; i < caratteri.Length; i++)
             {
                 funzioneRidotta = funzioneRidotta.Replace(caratteri[i], "");
                 funzione = funzione.Replace(" ", "");
             }
+
+            if (funzione.Substring(funzione.Length - 1, 1) == "+" || funzione.Substring(funzione.Length - 1, 1) == "-" || funzione.Substring(funzione.Length - 1, 1) == "*" || funzione.Substring(funzione.Length - 1, 1) == "/"|| funzione.Substring(funzione.Length - 1, 1) == "^")
+                return false;
 
             char[] stringa = funzione.ToCharArray();
             double sommaChar = 0, SommaCharRidotto = 0;
