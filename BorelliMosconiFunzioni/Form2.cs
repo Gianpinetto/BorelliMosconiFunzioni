@@ -45,6 +45,10 @@ namespace BorelliMosconiFunzioni
             textBox1.Text = $"{PuntoInizio}";
             textBox2.Text = $"{Math.Abs(PuntoInizio)}";
         }
+        private void Form2_Load(object sender, EventArgs e)
+        {
+
+        }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
@@ -75,17 +79,15 @@ namespace BorelliMosconiFunzioni
                 PuntoInizio = RangeMinimo;
                 this.Hide();
             }
-            else
+            else if(checkBox1.Checked == true)
+                MessageBox.Show("Inserire dei valori accettabili");
+
+            if (checkBox1.Checked != true)
             {
-                if (condizione == false)
-                    MessageBox.Show("Inserire un testo valido");
-                else
-                {
-                    trackBar1_Scroll(sender, e);
-                    trackBar2_Scroll(sender, e);
-                    PuntoInizio = -(range2 / 2) * precisione2;
-                    this.Hide();
-                }
+                trackBar1_Scroll(sender, e);
+                trackBar2_Scroll(sender, e);
+                PuntoInizio = -(range2 / 2) * precisione2;
+                this.Hide();
             }
         }
 
@@ -106,7 +108,7 @@ namespace BorelliMosconiFunzioni
             volte++;
         }
 
-        public static bool VerificaString(string RangeMinimo, string RangeMaximo) 
+        public static bool VerificaString(string RangeMinimo, string RangeMaximo)
         {
             RangeMinimo = RangeMinimo.Replace(" ", "");
             RangeMaximo = RangeMaximo.Replace(" ", "");
@@ -129,12 +131,6 @@ namespace BorelliMosconiFunzioni
                 return false;
             else
                 return true;
-        }
-
-
-        private void Form2_Load(object sender, EventArgs e)
-        {
-
         }
 
     }
