@@ -423,7 +423,6 @@ namespace BorelliMosconiFunzioni
             }
             VecchiaLunghezzaCasellaTesto = NuovaLunghezzaCasellaTesto;
 
-
         }
 
         public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo, ref double xmin, ref double xmax, double PuntoInizio)
@@ -494,7 +493,7 @@ namespace BorelliMosconiFunzioni
             }
 
             if (funzione.Substring(funzione.Length - 1, 1) == "+" || funzione.Substring(funzione.Length - 1, 1) == "-" || funzione.Substring(funzione.Length - 1, 1) == "*" || funzione.Substring(funzione.Length - 1, 1) == "/"|| funzione.Substring(funzione.Length - 1, 1) == "^")
-                return false;
+                return false; //lo metto qui sotto e non sopra perchè così ho già tolto gli spazi
 
             char[] stringa = funzione.ToCharArray();
             double sommaChar = 0, SommaCharRidotto = 0;
@@ -540,16 +539,11 @@ namespace BorelliMosconiFunzioni
         }
         public static string CondizioniEsistenza(double[,,] coordinate, bool[,] condizioni)
         {
-            int[] PrimoControllo = new int[condizioni.GetLength(1)];
             int CondizioneRapida = 0;
-            for (int i = 0; i < PrimoControllo.Length; i++)
+            for (int i = 0; i < condizioni.GetLength(1); i++)
             {
-                PrimoControllo[i] = 0;
                 if (condizioni[0, i] == true)
-                {
-                    PrimoControllo[i] = 1;
                     CondizioneRapida++;
-                }
             }
 
             if (CondizioneRapida == 0)
@@ -558,7 +552,7 @@ namespace BorelliMosconiFunzioni
             if (CondizioneRapida == 1)
             {
                 int indice = 0;
-                while (PrimoControllo[indice] == 0)
+                while (condizioni[0,indice] == false)
                 {
                     indice++;
                 }
@@ -569,7 +563,7 @@ namespace BorelliMosconiFunzioni
             {
                 int[] indice = new int[2];
                 int hello = 0;
-                for (int i = 0; i < PrimoControllo.Length; i++)
+                for (int i = 0; i < condizioni.GetLength(1); i++)
                 {
                     if (condizioni[0, i] == true)
                     {
@@ -583,7 +577,7 @@ namespace BorelliMosconiFunzioni
             double[] valori = new double[] { -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000, -25000 };
             int helo = 0, GiaDentro = 0;
             string pezzifunzione = "";
-            for (int i = 0; i < PrimoControllo.Length; i++)
+            for (int i = 0; i < condizioni.GetLength(1); i++)
             {
                 if (condizioni[0, i] == true && GiaDentro == 0)
                 {
