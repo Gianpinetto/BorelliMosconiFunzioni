@@ -27,9 +27,19 @@ namespace BorelliMosconiFunzioni
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
         int controllo = 0;
         int range = 10000;
-        double aumentoX = 0.01, ymin = 0, ymax = 0, xmin = 0, xmax = 0, PuntoInizio = 0;
+        double aumentoX = 0.01, PuntoInizio = 0;
         double[,,] coordinate = new double[7, 2, 25000];
         bool[,] condizioni = new bool[7, 25000];
+
+        public struct dimensioniGrafico
+        {
+            public double ymin;
+            public double ymax;
+            public double xmin;
+            public double xmax;
+        }
+
+        dimensioniGrafico dimGraf;
 
         string funzione = " ", PariDispariIi = "";
 
@@ -106,26 +116,27 @@ namespace BorelliMosconiFunzioni
                 xAxis.Position = AxisPosition.Bottom;
                 yAxis.Position = AxisPosition.Left; //mio
 
+
                 pv.Model = model; //pv è il vostro oggetto esistente, assegniamo il model cui sopra
 
                 pv.Location = new Point(0, 0);
                 pv.Size = new Size(800, 525);
                 Controls.Add(pv);
                 pv.Model.InvalidatePlot(true);
-                pv.Model = new PlotModel { Title = $"GRAFICO DELLA FUNZIONE {textBox2.Text}" };
+                pv.Model = new PlotModel { Title = $"GRAFICO DELLA FUNZIONE: {textBox2.Text}" };
 
                 pv.Model.Axes.Add(xAxis);//mio
                 pv.Model.Axes.Add(yAxis); //aggiungiamo gli assi
 
-                x.Points.Add(new DataPoint(0, ymin - 1));
+                x.Points.Add(new DataPoint(0, dimGraf.ymin - 1));
                 x.Points.Add(new DataPoint(0, 0));
-                x.Points.Add(new DataPoint(0, ymax + 1));
+                x.Points.Add(new DataPoint(0, dimGraf.ymax + 1));
                 x.Color = OxyColor.FromArgb(255, 0, 0, 0);
                 pv.Model.Series.Add(x);
 
-                y.Points.Add(new DataPoint(xmin, 0));
+                y.Points.Add(new DataPoint(dimGraf.xmin, 0));
                 y.Points.Add(new DataPoint(0, 0));
-                y.Points.Add(new DataPoint(xmax + 1, 0));
+                y.Points.Add(new DataPoint(dimGraf.xmax + 1, 0));
                 y.Color = OxyColor.FromArgb(255, 0, 0, 0);
                 pv.Model.Series.Add(y);
 
@@ -154,16 +165,16 @@ namespace BorelliMosconiFunzioni
 
                 if (Impostasiu.ForzaPalermo == 0)
                 {
-                    pv.Model.Axes[0].AbsoluteMinimum = xmin;
-                    pv.Model.Axes[0].AbsoluteMaximum = xmax;
+                    pv.Model.Axes[0].AbsoluteMinimum = dimGraf.xmin;
+                    pv.Model.Axes[0].AbsoluteMaximum = dimGraf.xmax;
                 }
                 else
                 {
                     pv.Model.Axes[0].AbsoluteMinimum = PuntoInizio;
-                    pv.Model.Axes[0].AbsoluteMaximum = xmax;
+                    pv.Model.Axes[0].AbsoluteMaximum = dimGraf.xmax;
                 }
-                pv.Model.Axes[1].AbsoluteMinimum = ymin - 1;
-                pv.Model.Axes[1].AbsoluteMaximum = ymax + 1;
+                pv.Model.Axes[1].AbsoluteMinimum = dimGraf.ymin - 1;
+                pv.Model.Axes[1].AbsoluteMaximum = dimGraf.ymax + 1;
 
                 label1.Text = "";
                 label2.Text = "";
@@ -180,7 +191,7 @@ namespace BorelliMosconiFunzioni
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
-            ResetTutto(coordinate, condizioni, premuto, ref controllo, pv, ref ymin, ref ymax, ref xmin, ref xmax);
+            ResetTutto(coordinate, condizioni, premuto, ref controllo, pv, ref dimGraf);
             checkBox1.Checked = false;
             checkBox2.Checked = false;
             checkBox3.Checked = false;
@@ -214,7 +225,7 @@ namespace BorelliMosconiFunzioni
                 funzione = AggiungiSegno(funzione); //aggiunge segno tra xx e x+num
                 funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore e all'esponente
                 funzione = AggiungiUno(funzione);
-                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, 0, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, 0, ref controllo, PuntoInizio, ref dimGraf);
                 Form1_Load(sender, e);
             }
         }
@@ -222,7 +233,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
             else
                 checkBox1.Checked = false;
             Form1_Load(sender, e);
@@ -232,7 +243,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
             else
                 checkBox2.Checked = false;
             Form1_Load(sender, e);
@@ -241,7 +252,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio,ref dimGraf);
             else
                 checkBox3.Checked = false;
             Form1_Load(sender, e);
@@ -250,7 +261,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
             else
                 checkBox4.Checked = false;
             Form1_Load(sender, e);
@@ -259,7 +270,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
             else
                 checkBox5.Checked = false;
             Form1_Load(sender, e);
@@ -268,7 +279,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox6_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
             else
                 checkBox6.Checked = false;
             Form1_Load(sender, e);
@@ -336,7 +347,7 @@ namespace BorelliMosconiFunzioni
             pd.Model.Series.Add(punti);
         }
 
-        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, ref double ymin, ref double ymax, double aumentoX, int IndiceTrasformazione, ref double xMacs, ref double xMin)
+        public static void Risoluzione(ref string funzione, double[,,] coordinata, int contatore, ref double x, int condizione, double aumentoX, int IndiceTrasformazione, ref dimensioniGrafico dimGraf)
         {
             double y = 0; //1=f(-x); 2= -f(x); 3= -f(-x); 4= f(abs(x)); 5= abs(f(x)); 6=abs(f(abs(x)))
             if (condizione == 1)
@@ -373,15 +384,15 @@ namespace BorelliMosconiFunzioni
                 y = Math.Abs(y);
 
 
-            if (y < ymin) //per trovare limiti nel grafico
-                ymin = y;
-            if (y > ymax)
-                ymax = y;
+            if (y < dimGraf.ymin) //per trovare limiti nel grafico
+                dimGraf.ymin = y;
+            if (y > dimGraf.ymax)
+                dimGraf.ymax = y;
 
-            if (x < xMin)
-                xMin = x;
-            else if (x > xMacs)
-                xMacs = x;
+            if (x < dimGraf.xmin)
+                dimGraf.xmin = x;
+            else if (x > dimGraf.xmax)
+                dimGraf.xmax = x;
 
             coordinata[IndiceTrasformazione, 0, contatore] = x - aumentoX;
             coordinata[IndiceTrasformazione, 1, contatore] = y;
@@ -389,7 +400,7 @@ namespace BorelliMosconiFunzioni
             contatore++;
         }
 
-        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, int indice, ref int controllo, ref double xmax, ref double xmin, double PuntoInizio)
+        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, int indice, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf)
         {//questa funione trova sia i punti che le condizioni di esistenza della funzione appena passata 
             int contatore = 0;
             double x = PuntoInizio; //in questo modo con questa formula trovo sempre metà tra positivo e negativo
@@ -401,7 +412,7 @@ namespace BorelliMosconiFunzioni
                 funzione = backup; //sennò mi ha sostituito la "x" e io non la cambio più
                 try //condizioni esistenza + risoluzione contemporaneamente
                 {
-                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, ref ymin, ref ymax, aumentoX, indice, ref xmin, ref xmax); //provo a risolvere
+                    Risoluzione(ref funzione, coordinate, contatore, ref x, 1, aumentoX, indice, ref dimGraf); //provo a risolvere
                 }
                 catch
                 {
@@ -425,12 +436,12 @@ namespace BorelliMosconiFunzioni
 
         }
 
-        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, ref double ymin, ref double ymax, bool[,] condizioni, ref int controllo, ref double xmin, ref double xmax, double PuntoInizio)
+        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf)
         {
             //BUONGIORNO PROFE, SE STA LEGGENDO QUESTA PARTE DI CODICE LA INVIATIAMO CALOROSAMENTE A SALUTARCI, ALLA PROSSIMA LEZIONE, CON L'ESPRESSIONE "ORNITORINCO". GRAZIE E BUONA CORREZIONE ♥
 
             if (premuto[indice] == 0) //se è la prima volta calcolo 
-                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, ref ymin, ref ymax, condizioni, indice, ref controllo, ref xmin, ref xmax, PuntoInizio);
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, indice, ref controllo, PuntoInizio, ref dimGraf);
             else if (premuto[indice] % 2 == 1) //se il num è dispari vuol dire che sto disattivando il bottone quindi rendo linea invisibile
                 InsiemeDiCirconferenze.LineStyle = LineStyle.None;
             else //sennò la rendo visibile
@@ -438,7 +449,7 @@ namespace BorelliMosconiFunzioni
 
             premuto[indice]++; //aumento contatore
         }
-        public static void ResetTutto(double[,,] coordinate, bool[,] condizioni, int[] premuto, ref int controllo, PlotView pr, ref double ymin, ref double ymax, ref double xmin, ref double xmax)
+        public static void ResetTutto(double[,,] coordinate, bool[,] condizioni, int[] premuto, ref int controllo, PlotView pr, ref dimensioniGrafico dimGraf)
         {
             if (controllo >= 1)
             {
@@ -458,8 +469,8 @@ namespace BorelliMosconiFunzioni
                     premuto[i] = 0;
 
                 //ymin = ymax = xmin = xmax = 0;
-                ymin = xmin = 0;
-                ymax = xmax = 1;
+                dimGraf.ymin = dimGraf.xmin = 0;
+                dimGraf.ymax = dimGraf.xmax = 1;
 
                 pr.Model.Series.Clear();
                 pr.Model.InvalidatePlot(true);
@@ -492,7 +503,7 @@ namespace BorelliMosconiFunzioni
                 funzione = funzione.Replace(" ", "");
             }
 
-            if (funzione.Substring(funzione.Length - 1, 1) == "+" || funzione.Substring(funzione.Length - 1, 1) == "-" || funzione.Substring(funzione.Length - 1, 1) == "*" || funzione.Substring(funzione.Length - 1, 1) == "/"|| funzione.Substring(funzione.Length - 1, 1) == "^")
+            if (funzione.Substring(funzione.Length - 1, 1) == "+" || funzione.Substring(funzione.Length - 1, 1) == "-" || funzione.Substring(funzione.Length - 1, 1) == "*" || funzione.Substring(funzione.Length - 1, 1) == "/" || funzione.Substring(funzione.Length - 1, 1) == "^")
                 return false; //lo metto qui sotto e non sopra perchè così ho già tolto gli spazi
 
             char[] stringa = funzione.ToCharArray();
@@ -552,7 +563,7 @@ namespace BorelliMosconiFunzioni
             if (CondizioneRapida == 1)
             {
                 int indice = 0;
-                while (condizioni[0,indice] == false)
+                while (condizioni[0, indice] == false)
                 {
                     indice++;
                 }
