@@ -85,6 +85,7 @@ namespace BorelliMosconiFunzioni
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            button1.Enabled = false;
             this.KeyPreview = true;
             label1.Text = "";
             label2.Text = "";
@@ -237,8 +238,6 @@ namespace BorelliMosconiFunzioni
             else
                 checkBox1.Checked = false;
             Form1_Load(sender, e);
-
-
         }
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
@@ -426,6 +425,10 @@ namespace BorelliMosconiFunzioni
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
+            if (textBox2.Text != String.Empty)
+                button1.Enabled = true;
+            else
+                button1.Enabled = false;
             NuovaLunghezzaCasellaTesto = textBox2.Text.Length;
             if (NuovaLunghezzaCasellaTesto - 1 >= 0 && NuovaLunghezzaCasellaTesto > VecchiaLunghezzaCasellaTesto && textBox2.Text.Substring(NuovaLunghezzaCasellaTesto - 1, 1) == "(")
             {
