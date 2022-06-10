@@ -62,6 +62,7 @@ namespace BorelliMosconiFunzioni
         public Form1()
         {
             InitializeComponent();
+            button1.Enabled = false;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -84,7 +85,6 @@ namespace BorelliMosconiFunzioni
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            button1.Enabled = false;
             this.KeyPreview = true;
             label1.Text = "";
             label2.Text = "";
@@ -229,7 +229,21 @@ namespace BorelliMosconiFunzioni
                 Form1_Load(sender, e);
             }
         }
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox2.Text != String.Empty)
+                button1.Enabled = true;
+            else
+                button1.Enabled = false;
+            NuovaLunghezzaCasellaTesto = textBox2.Text.Length;
+            if (NuovaLunghezzaCasellaTesto - 1 >= 0 && NuovaLunghezzaCasellaTesto > VecchiaLunghezzaCasellaTesto && textBox2.Text.Substring(NuovaLunghezzaCasellaTesto - 1, 1) == "(")
+            {
+                textBox2.Text += ")";
+                textBox2.Select(NuovaLunghezzaCasellaTesto - 1, 0);
+            }
+            VecchiaLunghezzaCasellaTesto = NuovaLunghezzaCasellaTesto;
 
+        }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
@@ -423,23 +437,6 @@ namespace BorelliMosconiFunzioni
             }
             controllo++;
         }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-            if (textBox2.Text != String.Empty)
-                button1.Enabled = true;
-            else
-                button1.Enabled = false;
-            NuovaLunghezzaCasellaTesto = textBox2.Text.Length;
-            if (NuovaLunghezzaCasellaTesto - 1 >= 0 && NuovaLunghezzaCasellaTesto > VecchiaLunghezzaCasellaTesto && textBox2.Text.Substring(NuovaLunghezzaCasellaTesto - 1, 1) == "(")
-            {
-                textBox2.Text += ")";
-                textBox2.Select(NuovaLunghezzaCasellaTesto - 1, 0);
-            }
-            VecchiaLunghezzaCasellaTesto = NuovaLunghezzaCasellaTesto;
-
-        }
-
         public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf, ref int contatoreRapidissimo)
         {
             //BUONGIORNO PROFE, SE STA LEGGENDO QUESTA PARTE DI CODICE LA INVIATIAMO CALOROSAMENTE A SALUTARCI, ALLA PROSSIMA LEZIONE, CON L'ESPRESSIONE "ORNITORINCO". GRAZIE E BUONA CORREZIONE ♥
