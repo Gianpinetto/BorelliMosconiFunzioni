@@ -25,8 +25,7 @@ namespace BorelliMosconiFunzioni
         Form2 Impostasiu = new Form2();
 
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
-        int controllo = 0;
-        int range = 10000;
+        int controllo = 0, range = 10000, contatoreRapidissimo=0;
         double aumentoX = 0.01, PuntoInizio = 0;
         double[,,] coordinate = new double[7, 2, 25000];
         bool[,] condizioni = new bool[7, 25000];
@@ -180,7 +179,7 @@ namespace BorelliMosconiFunzioni
                 label1.Text = "";
                 label2.Text = "";
 
-                label1.Text = (CondizioniEsistenza(coordinate, condizioni));
+                label1.Text = (CondizioniEsistenza(coordinate, condizioni,contatoreRapidissimo));
 
                 //label2.Text = PariDispari(coordinate, funzione, condizioni);
             }
@@ -226,7 +225,7 @@ namespace BorelliMosconiFunzioni
                 funzione = AggiungiSegno(funzione); //aggiunge segno tra xx e x+num
                 funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore e all'esponente
                 funzione = AggiungiUno(funzione);
-                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, 0, ref controllo, PuntoInizio, ref dimGraf);
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, 0, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
                 Form1_Load(sender, e);
             }
         }
@@ -234,7 +233,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
+                PremiBottoni(fx1, pv, 1, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox1.Checked = false;
             Form1_Load(sender, e);
@@ -242,7 +241,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
+                PremiBottoni(fx2, pv, 2, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox2.Checked = false;
             Form1_Load(sender, e);
@@ -251,7 +250,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio,ref dimGraf);
+                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio,ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox3.Checked = false;
             Form1_Load(sender, e);
@@ -260,7 +259,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
+                PremiBottoni(absf1, pv, 4, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox4.Checked = false;
             Form1_Load(sender, e);
@@ -269,7 +268,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
+                PremiBottoni(absf2, pv, 5, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox5.Checked = false;
             Form1_Load(sender, e);
@@ -278,7 +277,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox6_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf);
+                PremiBottoni(absf3, pv, 6, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox6.Checked = false;
             Form1_Load(sender, e);
@@ -399,7 +398,7 @@ namespace BorelliMosconiFunzioni
             contatore++;
         }
 
-        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, int indice, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf)
+        public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, int indice, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf, ref int condizioneRapida)
         {//questa funione trova sia i punti che le condizioni di esistenza della funzione appena passata 
             int contatore = 0;
             double x = PuntoInizio; //in questo modo con questa formula trovo sempre metà tra positivo e negativo
@@ -415,6 +414,8 @@ namespace BorelliMosconiFunzioni
                 }
                 catch
                 {
+                    if (indice == 0)//sarebbe per le condzioni di esistenza, calcolo già qui quante volte non vale la C.E anzichè farlo in un ciclo a parte. Vale solo per 0, la fuznione principale, senza trasformazioni
+                        condizioneRapida++;
                     condizioni[indice, contatore] = true; //se fallisco rendo condizione true (applico "eccezione")
                     coordinate[indice, 0, contatore] = x - aumentoX;
                 }
@@ -439,12 +440,12 @@ namespace BorelliMosconiFunzioni
 
         }
 
-        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf)
+        public static void PremiBottoni(FunctionSeries InsiemeDiCirconferenze, PlotView pci, int indice, ref int[] premuto, string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf, ref int contatoreRapidissimo)
         {
             //BUONGIORNO PROFE, SE STA LEGGENDO QUESTA PARTE DI CODICE LA INVIATIAMO CALOROSAMENTE A SALUTARCI, ALLA PROSSIMA LEZIONE, CON L'ESPRESSIONE "ORNITORINCO". GRAZIE E BUONA CORREZIONE ♥
 
             if (premuto[indice] == 0) //se è la prima volta calcolo 
-                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, indice, ref controllo, PuntoInizio, ref dimGraf);
+                TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, indice, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else if (premuto[indice] % 2 == 1) //se il num è dispari vuol dire che sto disattivando il bottone quindi rendo linea invisibile
                 InsiemeDiCirconferenze.LineStyle = LineStyle.None;
             else //sennò la rendo visibile
@@ -551,15 +552,8 @@ namespace BorelliMosconiFunzioni
             }
             return funzione;
         }
-        public static string CondizioniEsistenza(double[,,] coordinate, bool[,] condizioni)
+        public static string CondizioniEsistenza(double[,,] coordinate, bool[,] condizioni, int CondizioneRapida)
         {
-            int CondizioneRapida = 0;
-            for (int i = 0; i < condizioni.GetLength(1); i++)
-            {
-                if (condizioni[0, i] == true)
-                    CondizioneRapida++;
-            }
-
             if (CondizioneRapida == 0)
                 return "DOMINIO: R ";
 
