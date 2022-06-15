@@ -48,37 +48,27 @@ namespace BorelliMosconiFunzioni
 
         PlotModel model = new PlotModel();
 
-        FunctionSeries fs = new FunctionSeries();
-        FunctionSeries x = new FunctionSeries();
-        FunctionSeries y = new FunctionSeries();
-        FunctionSeries fx1 = new FunctionSeries();
-        FunctionSeries fx2 = new FunctionSeries();
-        FunctionSeries fx3 = new FunctionSeries();
-        FunctionSeries absf1 = new FunctionSeries();
-        FunctionSeries absf2 = new FunctionSeries();
-        FunctionSeries absf3 = new FunctionSeries();
+        FunctionSeries fs,x,y,fx1,fx2,fx3,absf1,absf2,absf3 = new FunctionSeries();
 
 
         public Form1()
         {
             InitializeComponent();
             button1.Enabled = false;
+
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.T)) //dove metti funzione
-            {
                 textBox2.Focus();
-            }
             else if (keyData == (Keys.Control | Keys.I)) //impostazioni
-            {
                 button3.PerformClick();
-            }
             else if (keyData == (Keys.Enter)) //calc
-            {
                 button1.PerformClick();
-            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -89,26 +79,23 @@ namespace BorelliMosconiFunzioni
             label1.Text = "";
             label2.Text = "";
 
-            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
-            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
             if (controllo >= 1)
             {
                 fs = new FunctionSeries();
                 x = new FunctionSeries();
                 y = new FunctionSeries();
                 fx1 = new FunctionSeries();
-                fx1.Color = OxyColor.FromArgb(255, 255, 0, 0);
+                fx1.Color = OxyColor.FromArgb(255, 255, 0, 0); //rosso
                 fx2 = new FunctionSeries();
-                fx2.Color = OxyColor.FromArgb(255, 255, 128, 0);
+                fx2.Color = OxyColor.FromArgb(255, 255, 128, 0); //arancio
                 fx3 = new FunctionSeries();
-                fx3.Color = OxyColor.FromArgb(255, 255, 255, 0);
+                fx3.Color = OxyColor.FromArgb(255, 255, 255, 0); //yelloww
                 absf1 = new FunctionSeries();
-                absf1.Color = OxyColor.FromArgb(255, 0, 255, 255);
+                absf1.Color = OxyColor.FromArgb(255, 0, 255, 255); //azzurro
                 absf2 = new FunctionSeries();
-                absf2.Color = OxyColor.FromArgb(255, 0, 0, 255);
+                absf2.Color = OxyColor.FromArgb(255, 0, 0, 255); //blu
                 absf3 = new FunctionSeries();
-                absf3.Color = OxyColor.FromArgb(255, 255, 51, 255);
+                absf3.Color = OxyColor.FromArgb(255, 255, 51, 255); //rosa
 
                 var yAxis = new LinearAxis();
                 var xAxis = new LinearAxis();
@@ -231,7 +218,7 @@ namespace BorelliMosconiFunzioni
         }
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            if (textBox2.Text != String.Empty)
+            if (textBox2.Text != String.Empty) //se non è più vuota la casella della funzione
                 button1.Enabled = true;
             else
                 button1.Enabled = false;
