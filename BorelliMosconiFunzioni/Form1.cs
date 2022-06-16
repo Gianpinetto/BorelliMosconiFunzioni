@@ -167,7 +167,7 @@ namespace BorelliMosconiFunzioni
                 label2.Text = "";
 
                 label1.Text = (CondizioniEsistenza(coordinate, condizioni, contatoreRapidissimo));
-
+                //MessageBox.Show("BLL");
                 //MessageBox.Show($"F DI MENO X: '{PariODispari(funzione, 0)}'\nMENO F DI X: '{PariODispari(funzione, 1)}' ");
                 if (funzione == PariODispari(funzione, 0))
                     label2.Text = "PARI";
@@ -175,6 +175,7 @@ namespace BorelliMosconiFunzioni
                     label2.Text = "DISPARI";
                 else
                     label2.Text = "NE PARI NE DISPARI";
+
                 //label2.Text = PariDispari(coordinate, funzione, condizioni);
             }
         }
@@ -225,6 +226,7 @@ namespace BorelliMosconiFunzioni
                     espressionee += funzione.Substring(1, funzione.Length - 1);
                     funzione = espressionee;
                 }
+                funzione += "+0";
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, 0, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
                 Form1_Load(sender, e);
             }
@@ -648,6 +650,7 @@ namespace BorelliMosconiFunzioni
 
             for (int i = 0; i < espressione.Length; i++)
             {
+                //MessageBox.Show($"{i}");
                 singoloNum = "";
                 if (espressione.Substring(i, 1) == "X")
                 {
