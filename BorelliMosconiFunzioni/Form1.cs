@@ -25,7 +25,7 @@ namespace BorelliMosconiFunzioni
         Form2 Impostasiu = new Form2();
 
         int[] premuto = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
-        int controllo = 0, range = 10000, contatoreRapidissimo=0;
+        int controllo = 0, range = 10000, contatoreRapidissimo = 0;
         double aumentoX = 0.01, PuntoInizio = 0;
         double[,,] coordinate = new double[7, 2, 25000];
         bool[,] condizioni = new bool[7, 25000];
@@ -48,7 +48,7 @@ namespace BorelliMosconiFunzioni
 
         PlotModel model = new PlotModel();
 
-        FunctionSeries fs,x,y,fx1,fx2,fx3,absf1,absf2,absf3 = new FunctionSeries();
+        FunctionSeries fs, x, y, fx1, fx2, fx3, absf1, absf2, absf3 = new FunctionSeries();
 
 
         public Form1()
@@ -166,8 +166,15 @@ namespace BorelliMosconiFunzioni
                 label1.Text = "";
                 label2.Text = "";
 
-                label1.Text = (CondizioniEsistenza(coordinate, condizioni,contatoreRapidissimo));
+                label1.Text = (CondizioniEsistenza(coordinate, condizioni, contatoreRapidissimo));
 
+                //MessageBox.Show($"F DI MENO X: '{PariODispari(funzione, 0)}'\nMENO F DI X: '{PariODispari(funzione, 1)}' ");
+                if (funzione == PariODispari(funzione, 0))
+                    label2.Text = "PARI";
+                else if (PariODispari(funzione, 0) == PariODispari(funzione, 1))
+                    label2.Text = "DISPARI";
+                else
+                    label2.Text = "NE PARI NE DISPARI";
                 //label2.Text = PariDispari(coordinate, funzione, condizioni);
             }
         }
@@ -212,6 +219,12 @@ namespace BorelliMosconiFunzioni
                 funzione = AggiungiSegno(funzione); //aggiunge segno tra xx e x+num
                 funzione = DenominatoreParentesi(funzione); //aggiungo le tonde al denominatore e all'esponente
                 funzione = AggiungiUno(funzione);
+                string espressionee = " +";
+                if (funzione.Substring(1, 1) != "-" && funzione.Substring(1, 1) != "+")
+                {
+                    espressionee += funzione.Substring(1, funzione.Length - 1);
+                    funzione = espressionee;
+                }
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, 0, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
                 Form1_Load(sender, e);
             }
@@ -251,7 +264,7 @@ namespace BorelliMosconiFunzioni
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (controllo >= 1)
-                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio,ref dimGraf, ref contatoreRapidissimo);
+                PremiBottoni(fx3, pv, 3, ref premuto, funzione, range, aumentoX, coordinate, condizioni, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
             else
                 checkBox3.Checked = false;
             Form1_Load(sender, e);
@@ -373,6 +386,7 @@ namespace BorelliMosconiFunzioni
 
             Expression expr = new Expression(funzione);
             x += aumentoX;
+            x = Math.Round(x, 2);//lo arrotondo perchè sennò aggiunge dopo un tot un sacco di zeri a caso
             var value = expr.Eval(); //calcolo il valore della nuova espressione
             y = Convert.ToDouble(value); //converto in double
 
@@ -395,6 +409,8 @@ namespace BorelliMosconiFunzioni
 
             coordinata[IndiceTrasformazione, 0, contatore] = x - aumentoX;
             coordinata[IndiceTrasformazione, 1, contatore] = y;
+
+            //MessageBox.Show($"X: '{coordinata[IndiceTrasformazione, 0, contatore]}' Y: '{coordinata[IndiceTrasformazione, 0, contatore]}'");
 
             contatore++;
         }
@@ -623,78 +639,62 @@ namespace BorelliMosconiFunzioni
             return pezzifunzione;
         }
 
-        public static string PariDispari(double[,,] coordinate, string funzione, bool[,] condizionii)
+        public static string PariODispari(string espressione, int DaDoveVinei)//0=f di meno x 1= meno f di x
         {
+            int j = 0;
+            bool NonCeX = false, SuperatoPrimoSegno = false, SuperatoSecondoSegno = false;
+            Regex rx = new Regex(@"[1-9]");
+            string singoloNum;
 
-            //[0] risultato normale | [1] f(-x) | [2] -f(x)
-            /*string[] funzioni = new string[3];
-            double[,] risultati = new double[3, 20];
-            Expression expr = new Expression();
-            string backup = funzione;
-            double percentuale = 0;
-            double numero = 0;
-            double minimo = 0;
-            //MessageBox.Show($"{condizioni.GetLength(1)}");
-            for (int i = 5000; i < condizionii.GetLength(1); i++)
+            for (int i = 0; i < espressione.Length; i++)
             {
-                if (condizionii[0, i] == false)
+                singoloNum = "";
+                if (espressione.Substring(i, 1) == "X")
                 {
-                    MessageBox.Show($"CONDIZIONE:{condizionii[0, i]}\nNUMERO:{coordinate[0, 0, i]}");
-                    minimo = coordinate[0, 0, i];
-                    i = coordinate.GetLength(2);
-                }
-            }
-            MessageBox.Show($"{condizionii[0,0]}");
-            for (int j = 0; j < risultati.GetLength(1); j++)
-            {
-                for (int z = 0; z < funzioni.Length; z++)
-                {
-                    funzione = backup;
-                    for (int i = 0; i < funzione.Length; i++)
+                    NonCeX = false;
+                    if (i != espressione.Length - 1)//se non è l'ultimo carattere
                     {
-                        if (condizionii[0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))] == false)
+                        j = i + 1;//così salto la x
+                        if (espressione.Substring(j, 1) == "^")//se è seguito da elevazione
                         {
-                            //MessageBox.Show($"Lunghezza {Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))}\nNumero {Math.Round(coordinate[0, 0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))]),2} \nPercentuale {percentuale} \nValore {condizioni[0, (int)((coordinate.GetLength(2) - 1) * (percentuale / 100))]}");
-                            numero = Math.Round((coordinate[0, 0, Convert.ToInt32((coordinate.GetLength(2) - 1) * (percentuale / 100))]),2);
-
-                            if (funzione.Substring(i, 1).ToUpper() == "X")
+                            j+=2; //così salto ^ e la parentesi
+                            while (j < espressione.Length && rx.IsMatch(espressione.Substring(j, 1))) //finchè resta all'interno della stringa e resta un numero
                             {
-                                funzione = funzione.Remove(i, 1); //tolgo la x
-                                if (z == 0 || z == 2)
-                                    funzioni[z] = funzione.Insert(i, $"*({numero})");
-                                else if (z == 1 && numero>minimo)
-                                    funzioni[z] = funzione.Insert(i, $"*(-({numero}))");
+                                singoloNum += espressione.Substring(j, 1);
+                                j++;
                             }
                         }
                         else
-                            funzioni[z]="1";
+                            singoloNum = "1"; //qui è quando la x è in mezzo all'espressione non alla fine
                     }
-                    //MessageBox.Show(funzioni[z]);
-                    expr = new Expression(funzioni[z]);
-                    var value = expr.Eval(); //calcolo il valore della nuova espressione
-                    risultati[z, j] = Convert.ToDouble(value); //converto in double
+                    else
+                        singoloNum = "1";//se termina la funzone con X è 1
+
+                    if (int.Parse(singoloNum) % 2 != 0)
+                    {
+                        espressione = espressione.Insert(j, "*(-1)");
+                        i += (j - i) + 4;
+                    }
+                    //entrato = true;
+
                 }
 
-                percentuale += 5;
+                if ((espressione.Substring(i, 1) == "+" || espressione.Substring(i, 1) == "-" ||
+                    espressione.Substring(i, 1) == "*" || espressione.Substring(i, 1) == "/") && NonCeX && SuperatoSecondoSegno && DaDoveVinei == 1)
+                {
+                    espressione = espressione.Insert(i, "*(-4)");
+                    i += 5;
+                }
+
+                if ((espressione.Substring(i, 1) == "+" || espressione.Substring(i, 1) == "-" || espressione.Substring(i, 1) == "*" || espressione.Substring(i, 1) == "/") && !SuperatoPrimoSegno)
+                    SuperatoPrimoSegno = true;
+                else if (SuperatoPrimoSegno && (espressione.Substring(i, 1) == "+" || espressione.Substring(i, 1) == "-" || espressione.Substring(i, 1) == "*" || espressione.Substring(i, 1) == "/"))
+                {
+                    NonCeX = true;
+                    SuperatoSecondoSegno = true;
+                }
             }
-
-            int Pari = 0, Dispari = 0;
-            for (int i = 0; i < 20; i++)
-            {
-                if (risultati[0, i] == risultati[1, i])
-                    Pari++;
-                if (risultati[1, i] == risultati[2, i] * (-1))
-                    Dispari++;
-            }
-
-            //MessageBox.Show($"{Pari} DISPARI:{Dispari}");
-
-            if (Pari == 20)
-                return "È PARI";
-            if (Dispari == 20)
-                return "È DISPARI";*/
-
-            return "NÉ PARI NÉ DISPARI";
+            return espressione;
         }
     }
 }
