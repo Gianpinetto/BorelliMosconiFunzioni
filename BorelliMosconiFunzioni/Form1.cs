@@ -168,13 +168,18 @@ namespace BorelliMosconiFunzioni
                 label1.Text = "";
                 label2.Text = "";
 
+                if (Impostasiu.CondEsBool)
                 label1.Text = (CondizioniEsistenza(coordinate, condizioni, contatoreRapidissimo));
-                if (funzione == PariODispari(funzione, 0))
-                    label2.Text = "PARI";
-                else if (PariODispari(funzione, 0) == PariODispari(funzione, 1))
-                    label2.Text = "DISPARI";
-                else
-                    label2.Text = "NE PARI NE DISPARI";
+
+                if (Impostasiu.PariDispariBool)
+                {
+                    if (funzione == PariODispari(funzione, 0))
+                        label2.Text = "PARI";
+                    else if (PariODispari(funzione, 0) == PariODispari(funzione, 1))
+                        label2.Text = "DISPARI";
+                    else
+                        label2.Text = "NE PARI NE DISPARI";
+                }
 
                 //label2.Text = PariDispari(coordinate, funzione, condizioni);
             }

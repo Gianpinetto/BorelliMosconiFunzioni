@@ -18,6 +18,8 @@ namespace BorelliMosconiFunzioni
         public double PuntoInizio { get; set; }
 
         public double ForzaPalermo { get; set; }
+        public bool CondEsBool { get; set; }
+        public bool PariDispariBool { get; set; }
 
         float precisione = 0;
         int range = 0;
@@ -44,6 +46,9 @@ namespace BorelliMosconiFunzioni
             PuntoInizio = -(range2 / 2) * precisione2;
             textBox1.Text = $"{PuntoInizio}";
             textBox2.Text = $"{Math.Abs(PuntoInizio)}";
+
+            checkBox2.Checked = true;
+            checkBox3.Checked = true;
         }
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -77,6 +82,15 @@ namespace BorelliMosconiFunzioni
                 double rangePROVVISORIO = (RangeMassimo - RangeMinimo) / precisione2;
                 range2 = Convert.ToInt32(rangePROVVISORIO);
                 PuntoInizio = RangeMinimo;
+                if (!checkBox2.Checked)
+                    CondEsBool = false;
+                else
+                    CondEsBool = true;
+
+                if (!checkBox3.Checked)
+                    PariDispariBool = false;
+                else
+                    PariDispariBool = true;
                 this.Hide();
             }
             else if(checkBox1.Checked == true)
@@ -84,6 +98,16 @@ namespace BorelliMosconiFunzioni
 
             if (checkBox1.Checked != true)
             {
+                if (!checkBox2.Checked)
+                    CondEsBool = false;
+                else
+                    CondEsBool = true;
+
+                if (!checkBox3.Checked)
+                    PariDispariBool = false;
+                else
+                    PariDispariBool = true;
+
                 trackBar1_Scroll(sender, e);
                 trackBar2_Scroll(sender, e);
                 PuntoInizio = -(range2 / 2) * precisione2;
