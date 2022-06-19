@@ -40,7 +40,7 @@ namespace BorelliMosconiFunzioni
 
         dimensioniGrafico dimGraf;
 
-        string funzione = " ", PariDispariIi = "";
+        string funzione = " ";
 
         int VecchiaLunghezzaCasellaTesto = 0, NuovaLunghezzaCasellaTesto = 0;
 
@@ -78,9 +78,11 @@ namespace BorelliMosconiFunzioni
             this.KeyPreview = true;
             label1.Text = "";
             label2.Text = "";
+            //MessageBox.Show("SONO FUROI");
 
             if (controllo >= 1)
             {
+                //MessageBox.Show("SONO DENTRO 1");
                 fs = new FunctionSeries();
                 x = new FunctionSeries();
                 y = new FunctionSeries();
@@ -167,8 +169,6 @@ namespace BorelliMosconiFunzioni
                 label2.Text = "";
 
                 label1.Text = (CondizioniEsistenza(coordinate, condizioni, contatoreRapidissimo));
-                //MessageBox.Show("BLL");
-                //MessageBox.Show($"F DI MENO X: '{PariODispari(funzione, 0)}'\nMENO F DI X: '{PariODispari(funzione, 1)}' ");
                 if (funzione == PariODispari(funzione, 0))
                     label2.Text = "PARI";
                 else if (PariODispari(funzione, 0) == PariODispari(funzione, 1))
@@ -227,6 +227,7 @@ namespace BorelliMosconiFunzioni
                     funzione = espressionee;
                 }
                 funzione += "+0";
+                //MessageBox.Show(funzione);
                 TrovaPuntiEcondizioni(funzione, range, aumentoX, coordinate, condizioni, 0, ref controllo, PuntoInizio, ref dimGraf, ref contatoreRapidissimo);
                 Form1_Load(sender, e);
             }
@@ -419,7 +420,7 @@ namespace BorelliMosconiFunzioni
 
         public static void TrovaPuntiEcondizioni(string funzione, int range, double aumentoX, double[,,] coordinate, bool[,] condizioni, int indice, ref int controllo, double PuntoInizio, ref dimensioniGrafico dimGraf, ref int condizioneRapida)
         {//questa funione trova sia i punti che le condizioni di esistenza della funzione appena passata 
-            int contatore = 0;
+            int contatore = condizioneRapida= 0;
             double x = PuntoInizio; //in questo modo con questa formula trovo sempre metà tra positivo e negativo
             double xCiao = x;
             string backup = funzione;
@@ -606,7 +607,7 @@ namespace BorelliMosconiFunzioni
             int minore = 0, entrato = 0;
             for (int i = 0; i < valori.Length - 1; i++)
             {
-                if (valori[i] == -25000 && valori[i + 1] == -25000)
+                if (valori[i] == -25000 && valori[i + 1] == -25000) //se si seguono perchè magari il primo può davvero essere -25000 il secondo non può esserlo
                     i = valori.Length;
                 else
                 {
