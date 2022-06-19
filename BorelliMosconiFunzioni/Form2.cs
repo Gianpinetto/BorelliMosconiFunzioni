@@ -49,6 +49,9 @@ namespace BorelliMosconiFunzioni
 
             checkBox2.Checked = true;
             checkBox3.Checked = true;
+
+            CondEsBool = true;
+            PariDispariBool = true;
         }
         private void Form2_Load(object sender, EventArgs e)
         {
